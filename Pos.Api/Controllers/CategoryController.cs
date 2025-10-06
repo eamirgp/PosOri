@@ -17,14 +17,14 @@ namespace Pos.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(CreateCategoryRequest createCategoryRequest)
+        public async Task<IActionResult> CreateAsync([FromBody]CreateCategoryRequest createCategoryRequest)
         {
             var response = await _sender.Send(createCategoryRequest);
             return Created(string.Empty, response);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(Guid id, UpdateCategoryRequest updateCategoryRequest)
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody]UpdateCategoryRequest updateCategoryRequest)
         {
             var newRequest = updateCategoryRequest with { Id = id };
             var response = await _sender.Send(newRequest);

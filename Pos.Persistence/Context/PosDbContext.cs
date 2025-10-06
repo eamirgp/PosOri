@@ -15,5 +15,9 @@ namespace Pos.Persistence.Context
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Warehouse> Warehouses { get; set; }
+        public DbSet<VoucherType> VoucherTypes { get; set; }
+        public DbSet<Person> Persons { get; set; }
+        public DbSet<DocumentType> DocumentTypes { get; set; }
     }
 }

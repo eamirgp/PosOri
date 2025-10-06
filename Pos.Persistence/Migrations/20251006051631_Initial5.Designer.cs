@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pos.Persistence.Context;
 
@@ -11,9 +12,11 @@ using Pos.Persistence.Context;
 namespace Pos.Persistence.Migrations
 {
     [DbContext(typeof(PosDbContext))]
-    partial class PosDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251006051631_Initial5")]
+    partial class Initial5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,7 +65,7 @@ namespace Pos.Persistence.Migrations
 
                     b.HasIndex("Code")
                         .IsUnique()
-                        .HasDatabaseName("IX_DocumentType_Code_Unique");
+                        .HasDatabaseName("IX_Code_DocumentType_Unique");
 
                     b.ToTable("DocumentTypes");
 
@@ -83,25 +86,6 @@ namespace Pos.Persistence.Migrations
                             Description = "R.U.C.",
                             Length = 11
                         });
-                });
-
-            modelBuilder.Entity("Pos.Domain.Entities.Person", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("DocumentTypeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DocumentTypeId");
-
-                    b.ToTable("Persons");
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.Product", b =>
@@ -146,7 +130,7 @@ namespace Pos.Persistence.Migrations
 
                     b.HasIndex("Code")
                         .IsUnique()
-                        .HasDatabaseName("IX_VoucherType_Code_Unique");
+                        .HasDatabaseName("IX_Code_VoucherType_Unique");
 
                     b.ToTable("VoucherTypes");
 
@@ -216,7 +200,7 @@ namespace Pos.Persistence.Migrations
 
                             b1.HasIndex("Value")
                                 .IsUnique()
-                                .HasDatabaseName("IX_Category_Name_Unique");
+                                .HasDatabaseName("IX_Name_Category_Unique");
 
                             b1.ToTable("Categories");
 
@@ -228,125 +212,6 @@ namespace Pos.Persistence.Migrations
 
                     b.Navigation("Name")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Pos.Domain.Entities.Person", b =>
-                {
-                    b.HasOne("Pos.Domain.Entities.DocumentType", "DocumentType")
-                        .WithMany()
-                        .HasForeignKey("DocumentTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.OwnsOne("Pos.Domain.ValueObjects.Person.Address", "Address", b1 =>
-                        {
-                            b1.Property<Guid>("PersonId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Value")
-                                .HasMaxLength(200)
-                                .HasColumnType("nvarchar(200)")
-                                .HasColumnName("Address");
-
-                            b1.HasKey("PersonId");
-
-                            b1.ToTable("Persons");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PersonId");
-                        });
-
-                    b.OwnsOne("Pos.Domain.ValueObjects.Person.DocumentNumber", "DocumentNumber", b1 =>
-                        {
-                            b1.Property<Guid>("PersonId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasMaxLength(11)
-                                .HasColumnType("nvarchar(11)")
-                                .HasColumnName("DocumentNumber");
-
-                            b1.HasKey("PersonId");
-
-                            b1.HasIndex("Value")
-                                .IsUnique()
-                                .HasDatabaseName("IX_Person_DocumentNumber_Unique");
-
-                            b1.ToTable("Persons");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PersonId");
-                        });
-
-                    b.OwnsOne("Pos.Domain.ValueObjects.Person.Email", "Email", b1 =>
-                        {
-                            b1.Property<Guid>("PersonId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Value")
-                                .HasMaxLength(100)
-                                .HasColumnType("nvarchar(100)")
-                                .HasColumnName("Email");
-
-                            b1.HasKey("PersonId");
-
-                            b1.ToTable("Persons");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PersonId");
-                        });
-
-                    b.OwnsOne("Pos.Domain.ValueObjects.Person.Name", "Name", b1 =>
-                        {
-                            b1.Property<Guid>("PersonId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasMaxLength(150)
-                                .HasColumnType("nvarchar(150)")
-                                .HasColumnName("Name");
-
-                            b1.HasKey("PersonId");
-
-                            b1.ToTable("Persons");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PersonId");
-                        });
-
-                    b.OwnsOne("Pos.Domain.ValueObjects.Person.Phone", "Phone", b1 =>
-                        {
-                            b1.Property<Guid>("PersonId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Value")
-                                .HasMaxLength(20)
-                                .HasColumnType("nvarchar(20)")
-                                .HasColumnName("Phone");
-
-                            b1.HasKey("PersonId");
-
-                            b1.ToTable("Persons");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PersonId");
-                        });
-
-                    b.Navigation("Address");
-
-                    b.Navigation("DocumentNumber")
-                        .IsRequired();
-
-                    b.Navigation("DocumentType");
-
-                    b.Navigation("Email");
-
-                    b.Navigation("Name")
-                        .IsRequired();
-
-                    b.Navigation("Phone");
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.Product", b =>
@@ -372,7 +237,7 @@ namespace Pos.Persistence.Migrations
 
                             b1.HasIndex("Value")
                                 .IsUnique()
-                                .HasDatabaseName("IX_Product_Code_Unique");
+                                .HasDatabaseName("IX_Code_Product_Unique");
 
                             b1.ToTable("Products");
 
@@ -503,7 +368,7 @@ namespace Pos.Persistence.Migrations
 
                             b1.HasIndex("Value")
                                 .IsUnique()
-                                .HasDatabaseName("IX_Warehouse_Name_Unique");
+                                .HasDatabaseName("IX_Name_Warehouse_Unique");
 
                             b1.ToTable("Warehouses");
 

@@ -6,7 +6,7 @@ namespace Pos.Persistence.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
-        private readonly PosDbContext _posDbContext;
+        protected readonly PosDbContext _posDbContext;
 
         public GenericRepository(PosDbContext posDbContext)
         {

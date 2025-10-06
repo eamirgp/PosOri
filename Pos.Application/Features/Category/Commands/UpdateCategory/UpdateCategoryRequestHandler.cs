@@ -18,7 +18,10 @@ namespace Pos.Application.Features.Category.Commands.UpdateCategory
         {
             var category = await _categoryRepository.GetByIdAsync(request.Id);
             if (category is null)
-                throw new ArgumentException($"La categoría con ID '{request.Id}' no existe.");
+                throw new Exception($"La categoría con ID '{request.Id}' no existe.");
+
+            if (await _categoryRepository.ExistName(request.Name, category.Id))
+                throw new Exception($"El nombre '{request.Name}' ya existe.");
 
             category.UpdateName(request.Name);
             category.UpdateDescription(request.Description);

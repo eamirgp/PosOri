@@ -2,7 +2,7 @@
 
 namespace Pos.Application.Contracts.Persistence
 {
-    public interface ICategoryRepository : IGenericRepository<Category>
+    public interface IWarehouseRepository : IGenericRepository<Warehouse>
     {
         Task<bool> ExistName(string name, Guid? id = null);
     }

@@ -22,7 +22,7 @@ namespace Pos.Persistence.Configurations
 
                 name.HasIndex(n => n.Value)
                     .IsUnique()
-                    .HasDatabaseName("IX_Name_Category_Unique");
+                    .HasDatabaseName("IX_Category_Name_Unique");
             });
 
             builder.OwnsOne(c => c.Description, description =>

@@ -16,6 +16,9 @@ namespace Pos.Application.Features.Category.Commands.CreateCategory
 
         public async Task<Guid> Handle(CreateCategoryRequest request, CancellationToken cancellationToken)
         {
+            if (await _categoryRepository.ExistName(request.Name))
+                throw new Exception($"El nombre '{request.Name}' ya existe.");
+
             var category = Domain.Entities.Category.Create(
                 request.Name,
                 request.Description

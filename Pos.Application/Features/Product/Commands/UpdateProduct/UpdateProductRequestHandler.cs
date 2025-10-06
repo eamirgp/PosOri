@@ -24,7 +24,10 @@ namespace Pos.Application.Features.Product.Commands.UpdateProduct
 
             var category = await _categoryRepository.GetByIdAsync(request.CategoryId);
             if (category is null)
-                throw new ArgumentException($"La categoría con ID '{request.CategoryId}' no existe.");
+                throw new Exception($"La categoría con ID '{request.CategoryId}' no existe.");
+
+            if (await _productRepository.ExistCode(request.Code, product.Id))
+                throw new Exception($"El código '{request.Code}' ya existe.");
 
             product.UpdateCategory(category.Id);
             product.UpdateCode(request.Code);
