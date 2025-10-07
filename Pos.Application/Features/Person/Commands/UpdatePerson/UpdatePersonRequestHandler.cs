@@ -26,6 +26,9 @@ namespace Pos.Application.Features.Person.Commands.UpdatePerson
             if (documentType is null)
                 throw new Exception($"El tipo de documento con ID '{request.DocumentTypeId}' no existe.");
 
+            if (await _personRepository.ExistDocumentNumber(request.DocumentNumber, person.Id))
+                throw new Exception($"El número de documento '{request.DocumentNumber}' ya existe.");
+
             person.UpdateDocumentType(documentType);
             person.UpdateDocumentNumber(request.DocumentNumber, documentType);
             person.UpdateName(request.Name);

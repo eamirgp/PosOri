@@ -41,6 +41,7 @@ namespace Pos.Domain.Entities
         public void UpdateDocumentType(DocumentType documentType)
         {
             DocumentType = documentType;
+            DocumentTypeId = documentType.Id;
         }
 
         public void UpdateDocumentNumber(string documentNumber, DocumentType documentType)

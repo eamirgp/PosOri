@@ -22,6 +22,9 @@ namespace Pos.Application.Features.Person.Commands.CreatePerson
             if (documentType is null)
                 throw new Exception($"El tipo de documento con ID '{request.DocumentTypeId}' no existe.");
 
+            if (await _personRepository.ExistDocumentNumber(request.DocumentNumber))
+                throw new Exception($"El número de documento '{request.DocumentNumber}' ya existe.");
+
             var person = Domain.Entities.Person.Create(
                 documentType,
                 request.DocumentNumber,

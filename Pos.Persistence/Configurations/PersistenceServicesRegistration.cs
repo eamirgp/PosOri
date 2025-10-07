@@ -18,6 +18,7 @@ namespace Pos.Persistence.Configurations
             services.AddScoped<IWarehouseRepository, WarehouseRepository>();
             services.AddScoped<IPersonRepository, PersonRepository>();
             services.AddScoped<IDocumentTypeRepository, DocumentTypeRepository>();
+            services.AddScoped<IVoucherTypeRepository, VoucherTypeRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
