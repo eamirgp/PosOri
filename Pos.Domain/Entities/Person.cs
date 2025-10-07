@@ -5,7 +5,7 @@ namespace Pos.Domain.Entities
 {
     public class Person : BaseEntity
     {
-        public Guid DocumentTypeId { get; private set; } = default!;
+        public Guid DocumentTypeId { get; private set; }
         public DocumentNumber DocumentNumber { get; private set; } = default!;
         public Name Name { get; private set; } = default!;
         public Address? Address { get; private set; }
