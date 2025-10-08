@@ -1,4 +1,5 @@
 ﻿using Pos.Domain.Entities.Common;
+using Pos.Domain.Inputs;
 using Pos.Domain.ValueObjects.Purchase;
 
 namespace Pos.Domain.Entities
@@ -16,7 +17,7 @@ namespace Pos.Domain.Entities
         public decimal TaxAmount { get; private set; }
         public decimal Total { get; private set; }
 
-        public List<PurchaseDetail> PurchaseDetails { get; private set; } = default!;
+        public List<PurchaseDetail> PurchaseDetails { get; private set; } = new();
 
         protected Purchase() { }
 
@@ -28,16 +29,53 @@ namespace Pos.Domain.Entities
             PersonId = personId;
             VoucherNumber = voucherNumber;
             IssueDate = issueDate;
+            Total = 0;
         }
 
-        public static Purchase Create(Guid warehouseId, Guid voucherTypeId, Guid currencyId, Guid personId, string serie, string number, DateTime issueDate)
+        public static Purchase Create(Guid warehouseId, Guid voucherTypeId, Guid currencyId, Guid personId, string serie, string number, DateTime issueDate, List<PurchaseDetailInput> details)
         {
             var voucherNumberVO = VoucherNumber.Create(serie, number);
             var issueDateVO = IssueDate.Create(issueDate);
 
-            PurchaseDetail.Create();
+            ValidateHasPurchaseDetail(details);
+            ValidateNoDuplicateProducts(details);
 
-            return new(warehouseId, voucherTypeId, currencyId, personId, voucherNumberVO, issueDateVO);
+            var purchase = new Purchase(warehouseId, voucherTypeId, currencyId, personId, voucherNumberVO, issueDateVO);
+
+            foreach(var detail in details)
+            {
+                purchase.AddPurchaseDetail(detail.ProductId, detail.UnitOfMeasureId, detail.IGVType, detail.Quantity, detail.UnitValue);
+            }
+
+            purchase.CalculateTotal();
+
+            return purchase;
+        }
+
+        private void AddPurchaseDetail(Guid productId, Guid unitOfMeasureId, IGVType igvType, decimal quantity, decimal unitValue)
+        {
+            var detail = PurchaseDetail.Create(this, productId, unitOfMeasureId, igvType, quantity, unitValue);
+            PurchaseDetails.Add(detail);
+        }
+
+        private void CalculateTotal()
+        {
+            SubTotal = PurchaseDetails.Where(pd => pd.IGVType.Rate > 0).Sum(pd => pd.Amount);
+            Exempt = PurchaseDetails.Where(pd => pd.IGVType.Rate == 0).Sum(pd => pd.Amount);
+            TaxAmount = PurchaseDetails.Sum(pd => pd.TaxAmount);
+            Total = SubTotal + Exempt + TaxAmount;
+        }
+
+        private static void ValidateHasPurchaseDetail(List<PurchaseDetailInput> details)
+        {
+            if (details is null || !details.Any())
+                throw new ArgumentException("La compra debe tener al menos un detalle.");
+        }
+
+        private static void ValidateNoDuplicateProducts(List<PurchaseDetailInput> details)
+        {
+            if (details.Select(d => d.ProductId).Distinct().Count() != details.Count)
+                throw new ArgumentException("No puede haber productos duplicados.");
         }
     }
 }

@@ -5,5 +5,6 @@
         Task CreateAsync(T entity);
 
         Task<T?> GetByIdAsync(Guid id);
+        Task<List<T>> GetByIdsAsync(List<Guid> ids);
     }
 }

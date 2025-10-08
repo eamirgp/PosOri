@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Pos.Application.Shared.Result;
 
 namespace Pos.Application.Features.Purchase.Commands.CreatePurchase
 {
@@ -10,6 +11,6 @@ namespace Pos.Application.Features.Purchase.Commands.CreatePurchase
         string Serie,
         string Number,
         DateTime IssueDate,
-        List<PurchaseDetailRequest> PurchaseDetails
-        ) : IRequest<Guid>;
+        List<CreatePurchaseDetailDto> Details
+        ) : IRequest<Result<Guid>>;
 }
