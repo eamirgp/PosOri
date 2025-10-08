@@ -14,6 +14,7 @@ namespace Pos.Persistence.Context
         }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<IGVType> IGVTypes { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<Inventory> Inventories { get; set; }
@@ -22,5 +23,6 @@ namespace Pos.Persistence.Context
         public DbSet<Purchase> Purchases { get; set; }
         public DbSet<VoucherType> VoucherTypes { get; set; }
         public DbSet<Currency> Currencies { get; set; }
+        public DbSet<UnitOfMeasure> UnitOfMeasures { get; set; }
     }
 }

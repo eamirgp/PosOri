@@ -13,6 +13,18 @@ namespace Pos.Persistence.Configurations
             builder.Property(p => p.Id)
                 .IsRequired();
 
+            builder.Property(p => p.WarehouseId)
+                .IsRequired();
+
+            builder.Property(p => p.VoucherTypeId)
+                .IsRequired();
+
+            builder.Property(p => p.CurrencyId)
+                .IsRequired();
+
+            builder.Property(p => p.PersonId)
+                .IsRequired();
+
             builder.OwnsOne(p => p.VoucherNumber, voucherNumber =>
             {
                 voucherNumber.Property(vn => vn.Serie)
