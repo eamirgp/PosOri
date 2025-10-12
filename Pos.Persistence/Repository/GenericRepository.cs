@@ -19,6 +19,11 @@ namespace Pos.Persistence.Repository
             await _posDbContext.Set<T>().AddAsync(entity);
         }
 
+        public async Task CreateRangeAsync(List<T> entities)
+        {
+            await _posDbContext.Set<T>().AddRangeAsync(entities);
+        }
+
         public async Task<T?> GetByIdAsync(Guid id)
         {
             return await _posDbContext.Set<T>().FindAsync(id);

@@ -18,11 +18,20 @@ namespace Pos.Domain.Entities
             Stock = stock;
         }
 
-        public static Inventory Create(Guid productId, Guid warehouseId, int stock)
+        public static Inventory Create(Guid productId, Guid warehouseId, decimal stock)
         {
             var stockVO = Stock.Create(stock);
 
             return new(productId, warehouseId, stockVO);
+        }
+
+        public void IncreaseStock(decimal quantity)
+        {
+            if (quantity < 0)
+                throw new ArgumentException("La cantidad debe ser mayor a 0.");
+
+            var newStockValue = Stock.Value + quantity;
+            Stock = Stock.Create(newStockValue);
         }
     }
 }

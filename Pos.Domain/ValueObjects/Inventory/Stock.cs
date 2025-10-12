@@ -2,15 +2,18 @@
 {
     public class Stock
     {
-        public int Value { get; private set; }
+        public decimal Value { get; private set; }
 
-        private Stock(int value)
+        private Stock(decimal value)
         {
             Value = value;
         }
 
-        public static Stock Create(int value)
+        public static Stock Create(decimal value)
         {
+            if (value < 0)
+                throw new ArgumentException("El stock debe ser mayor a 0.");
+
             return new(value);
         }
     }

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Pos.Application.Contracts.Persistence;
 using Pos.Application.Shared.Result;
+using Pos.Domain.Entities;
 using Pos.Domain.Inputs;
 
 namespace Pos.Application.Features.Purchase.Commands.CreatePurchase
@@ -110,6 +111,31 @@ namespace Pos.Application.Features.Purchase.Commands.CreatePurchase
                 );
 
             await _purchaseRepository.CreateAsync(purchase);
+
+            var inventories = await _inventoryRepository.GetByProductsAndWarehouse(productIds, warehouse.Id);
+            var inventoriesDictionary = inventories.ToDictionary(i => i.ProductId);
+
+            var newInventories = new List<Inventory>();
+
+            foreach (var detail in request.Details)
+            {
+                if (inventoriesDictionary.TryGetValue(detail.ProductId, out var inventory))
+                {
+                    inventory.IncreaseStock(detail.Quantity);
+                }
+                else
+                {
+                    var newInventory = Inventory.Create(
+                        detail.ProductId,
+                        warehouse.Id,
+                        detail.Quantity
+                        );
+
+                    newInventories.Add(newInventory);
+                }
+            }
+
+            await _inventoryRepository.CreateRangeAsync(newInventories);
             await _unitOfWork.SaveChangesAsync();
 
             return Result<Guid>.Success(purchase.Id);
