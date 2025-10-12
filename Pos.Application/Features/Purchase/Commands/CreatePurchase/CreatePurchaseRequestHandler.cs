@@ -62,6 +62,9 @@ namespace Pos.Application.Features.Purchase.Commands.CreatePurchase
             if (person is null)
                 return Result<Guid>.Failure(new List<string> { $"El proveedor con ID '{request.PersonId}' no existe." }, 404);
 
+            if (await _purchaseRepository.ExistVoucherNumber(request.Serie, request.Number, voucherType.Id, person.Id))
+                return Result<Guid>.Failure(new List<string> { $"El documento '{request.Serie}-{request.Number}' ya existe para este proveedor." }, 409);
+
             var productIds = request.Details.Select(d => d.ProductId).ToList();
             var products = await _productRepository.GetByIdsAsync(productIds);
             var productsDictionary = products.ToDictionary(p => p.Id);
@@ -135,7 +138,9 @@ namespace Pos.Application.Features.Purchase.Commands.CreatePurchase
                 }
             }
 
-            await _inventoryRepository.CreateRangeAsync(newInventories);
+            if (newInventories.Any())
+                await _inventoryRepository.CreateRangeAsync(newInventories);
+
             await _unitOfWork.SaveChangesAsync();
 
             return Result<Guid>.Success(purchase.Id);

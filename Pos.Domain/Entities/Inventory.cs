@@ -27,7 +27,7 @@ namespace Pos.Domain.Entities
 
         public void IncreaseStock(decimal quantity)
         {
-            if (quantity < 0)
+            if (quantity <= 0)
                 throw new ArgumentException("La cantidad debe ser mayor a 0.");
 
             var newStockValue = Stock.Value + quantity;
