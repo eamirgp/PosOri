@@ -1,4 +1,4 @@
-﻿namespace Pos.Domain.ValueObjects.Purchase
+﻿namespace Pos.Domain.ValueObjects.Shared
 {
     public class IssueDate
     {

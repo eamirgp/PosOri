@@ -1,4 +1,4 @@
-﻿namespace Pos.Domain.ValueObjects.PurchaseDetail
+﻿namespace Pos.Domain.ValueObjects.Shared
 {
     public class Quantity
     {

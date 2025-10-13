@@ -21,6 +21,9 @@ namespace Pos.Persistence.Context
         public DbSet<Person> Persons { get; set; }
         public DbSet<DocumentType> DocumentTypes { get; set; }
         public DbSet<Purchase> Purchases { get; set; }
+        public DbSet<PurchaseDetail> PurchaseDetails { get; set; }
+        public DbSet<Sale> Sales { get; set; }
+        public DbSet<SaleDetail> SaleDetails { get; set; }
         public DbSet<VoucherType> VoucherTypes { get; set; }
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<UnitOfMeasure> UnitOfMeasures { get; set; }

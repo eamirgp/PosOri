@@ -1,5 +1,6 @@
 ﻿using Pos.Domain.Entities.Common;
 using Pos.Domain.ValueObjects.PurchaseDetail;
+using Pos.Domain.ValueObjects.Shared;
 
 namespace Pos.Domain.Entities
 {

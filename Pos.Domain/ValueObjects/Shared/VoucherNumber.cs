@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Pos.Domain.ValueObjects.Purchase
+namespace Pos.Domain.ValueObjects.Shared
 {
     public class VoucherNumber
     {
