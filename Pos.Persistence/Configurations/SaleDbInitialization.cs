@@ -13,6 +13,9 @@ namespace Pos.Persistence.Configurations
             builder.Property(s => s.Id)
                 .IsRequired();
 
+            builder.Property(s => s.WarehouseId)
+                .IsRequired();
+
             builder.Property(s => s.VoucherTypeId)
                 .IsRequired();
 
@@ -56,6 +59,10 @@ namespace Pos.Persistence.Configurations
 
             builder.Property(s => s.CreatedDate)
                 .IsRequired();
+
+            builder.HasOne<Warehouse>()
+                .WithMany()
+                .HasForeignKey(s => s.WarehouseId);
 
             builder.HasOne<VoucherType>()
                 .WithMany()
