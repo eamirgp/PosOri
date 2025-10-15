@@ -27,10 +27,6 @@ namespace Pos.Persistence.Configurations
             builder.Property(dt => dt.CreatedDate)
                 .IsRequired();
 
-            builder.HasIndex(dt => dt.Code)
-                .IsUnique()
-                .HasDatabaseName("IX_DocumentType_Code_Unique");
-
             builder.HasData(new
             {
                 Id = Guid.Parse("2a5c854a-cb59-4a18-9c30-ba30b045af0f"),

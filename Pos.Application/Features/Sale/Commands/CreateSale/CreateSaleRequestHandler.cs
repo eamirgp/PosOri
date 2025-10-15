@@ -16,6 +16,7 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
         private readonly IProductRepository _productRepository;
         private readonly IUnitOfMeasureRepository _unitOfMeasureRepository;
         private readonly IIGVTypeRepository _igvTypeRepository;
+        private readonly IInventoryRepository _inventoryRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public CreateSaleRequestHandler(
@@ -28,6 +29,7 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
             IProductRepository productRepository,
             IUnitOfMeasureRepository unitOfMeasureRepository,
             IIGVTypeRepository igvTypeRepository,
+            IInventoryRepository inventoryRepository,
             IUnitOfWork unitOfWork
             )
         {
@@ -40,6 +42,7 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
             _productRepository = productRepository;
             _unitOfMeasureRepository = unitOfMeasureRepository;
             _igvTypeRepository = igvTypeRepository;
+            _inventoryRepository = inventoryRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -117,6 +120,16 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
                 );
 
             await _saleRepository.CreateAsync(sale);
+
+            var inventories = await _inventoryRepository.GetByProductsAndWarehouse(productIds, warehouse.Id);
+            var inventoriesDictionary = inventories.ToDictionary(i => i.ProductId);
+
+            foreach (var detail in request.Details)
+            {
+                if (inventoriesDictionary.TryGetValue(detail.ProductId, out var inventory))
+                    inventory.DecreaseStock(detail.Quantity);
+            }
+
             await _unitOfWork.SaveChangesAsync();
 
             return Result<Guid>.Success(sale.Id);

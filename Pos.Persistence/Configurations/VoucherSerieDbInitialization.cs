@@ -8,7 +8,7 @@ namespace Pos.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<VoucherSerie> builder)
         {
-            builder.HasIndex(vs => vs.Id);
+            builder.HasKey(vs => vs.Id);
 
             builder.Property(vs => vs.Id)
                 .IsRequired();
@@ -29,10 +29,6 @@ namespace Pos.Persistence.Configurations
             builder.HasOne<VoucherType>()
                 .WithMany()
                 .HasForeignKey(vs => vs.VoucherTypeId);
-
-            builder.HasIndex(vs => new { vs.VoucherTypeId, vs.Serie })
-                .IsUnique()
-                .HasDatabaseName("IX_VoucherSerie_VoucherType_Serie_Unique");
 
             builder.HasData(new
             {

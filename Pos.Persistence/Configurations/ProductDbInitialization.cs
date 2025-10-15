@@ -19,10 +19,6 @@ namespace Pos.Persistence.Configurations
                     .HasColumnName("Code")
                     .IsRequired()
                     .HasMaxLength(20);
-
-                code.HasIndex(c => c.Value)
-                    .IsUnique()
-                    .HasDatabaseName("IX_Product_Code_Unique");
             });
 
             builder.OwnsOne(p => p.Name, name =>

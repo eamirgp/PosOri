@@ -28,10 +28,6 @@ namespace Pos.Persistence.Configurations
             builder.Property(it => it.CreatedDate)
                 .IsRequired();
 
-            builder.HasIndex(it => it.Code)
-                .IsUnique()
-                .HasDatabaseName("IX_IGVType_Code_Unique");
-
             builder.HasData(new
             {
                 Id = Guid.Parse("87f49009-4041-4a62-953a-27a303286e89"),

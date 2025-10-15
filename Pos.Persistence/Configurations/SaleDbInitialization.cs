@@ -75,14 +75,6 @@ namespace Pos.Persistence.Configurations
             builder.HasOne<Person>()
                 .WithMany()
                 .HasForeignKey(s => s.PersonId);
-
-            builder.HasIndex(s => new {
-                    s.VoucherNumber.Serie,
-                    s.VoucherNumber.Number,
-                    s.VoucherTypeId
-                })
-                .IsUnique()
-                .HasDatabaseName("IX_Sale_VoucherNumber_Unique");
         }
     }
 }

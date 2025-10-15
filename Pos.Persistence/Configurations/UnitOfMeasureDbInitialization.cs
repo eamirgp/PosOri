@@ -24,10 +24,6 @@ namespace Pos.Persistence.Configurations
             builder.Property(um => um.CreatedDate)
                 .IsRequired();
 
-            builder.HasIndex(um => um.Code)
-                .IsUnique()
-                .HasDatabaseName("IX_UnitOfMeasure_Code_Unique");
-
             builder.HasData(new
             {
                 Id = Guid.Parse("cc5cfa04-65b3-4cb2-9cd4-40c1a6c98b73"),

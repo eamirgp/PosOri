@@ -68,7 +68,7 @@ namespace Pos.Persistence.Configurations
                 .WithMany()
                 .HasForeignKey(sd => sd.UnitOfMeasureId);
 
-            builder.HasOne<IGVType>()
+            builder.HasOne(sd => sd.IGVType)
                 .WithMany()
                 .HasForeignKey(sd => sd.IGVTypeId);
         }

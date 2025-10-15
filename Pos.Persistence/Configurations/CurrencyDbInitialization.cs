@@ -24,10 +24,6 @@ namespace Pos.Persistence.Configurations
             builder.Property(c => c.CreatedDate)
                 .IsRequired();
 
-            builder.HasIndex(c => c.Code)
-                .IsUnique()
-                .HasDatabaseName("IX_Currency_Code_Unique");
-
             builder.HasData(new
             {
                 Id = Guid.Parse("e5228390-2c0b-434d-8fe1-886ab507ca98"),

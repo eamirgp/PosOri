@@ -17,7 +17,8 @@ namespace Pos.Persistence.Configurations
             {
                 stock.Property(s => s.Value)
                     .HasColumnName("Stock")
-                    .IsRequired();
+                    .IsRequired()
+                    .HasPrecision(18, 2);
             });
 
             builder.Property(i => i.CreatedDate)

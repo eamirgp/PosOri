@@ -24,10 +24,6 @@ namespace Pos.Persistence.Configurations
             builder.Property(vt => vt.CreatedDate)
                 .IsRequired();
 
-            builder.HasIndex(vt => vt.Code)
-                .IsUnique()
-                .HasDatabaseName("IX_VoucherType_Code_Unique");
-
             builder.HasData(new
             {
                 Id = Guid.Parse("9e991aec-8d56-438e-966f-e5d8079d2ab7"),

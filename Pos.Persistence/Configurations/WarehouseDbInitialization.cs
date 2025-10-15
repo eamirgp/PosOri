@@ -19,10 +19,6 @@ namespace Pos.Persistence.Configurations
                     .HasColumnName("Name")
                     .IsRequired()
                     .HasMaxLength(50);
-
-                name.HasIndex(n => n.Value)
-                    .IsUnique()
-                    .HasDatabaseName("IX_Warehouse_Name_Unique");
             });
 
             builder.OwnsOne(w => w.Address, address =>

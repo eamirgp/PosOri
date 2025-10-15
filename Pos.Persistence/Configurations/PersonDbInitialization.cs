@@ -19,10 +19,6 @@ namespace Pos.Persistence.Configurations
                     .HasColumnName("DocumentNumber")
                     .IsRequired()
                     .HasMaxLength(11);
-
-                documentNumber.HasIndex(dn => dn.Value)
-                    .IsUnique()
-                    .HasDatabaseName("IX_Person_DocumentNumber_Unique");
             });
 
             builder.OwnsOne(p => p.Name, name =>

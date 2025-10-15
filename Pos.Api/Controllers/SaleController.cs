@@ -20,7 +20,7 @@ namespace Pos.Api.Controllers
         {
             var response = await _sender.Send(createSaleRequest);
             return response.IsSuccess
-                ? Created(string.Empty, new { saleID = response.Value })
+                ? Created(string.Empty, new { saleId = response.Value })
                 : StatusCode(response.StatusCode, new { errors = response.Errors });
         }
     }
