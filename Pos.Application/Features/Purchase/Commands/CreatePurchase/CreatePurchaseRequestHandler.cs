@@ -69,11 +69,11 @@ namespace Pos.Application.Features.Purchase.Commands.CreatePurchase
             var products = await _productRepository.GetByIdsAsync(productIds);
             var productsDictionary = products.ToDictionary(p => p.Id);
 
-            var unitOfMeasureIds = request.Details.Select(d => d.UnitOfMeasureId).ToList();
+            var unitOfMeasureIds = request.Details.Select(d => d.UnitOfMeasureId).Distinct().ToList();
             var unitOfMeasures = await _unitOfMeasureRepository.GetByIdsAsync(unitOfMeasureIds);
             var unitOfMeasuresDictionary = unitOfMeasures.ToDictionary(um => um.Id);
 
-            var igvTypeIds = request.Details.Select(d => d.IGVTypeId).ToList();
+            var igvTypeIds = request.Details.Select(d => d.IGVTypeId).Distinct().ToList();
             var igvTypes = await _igvTypeRepository.GetByIdsAsync(igvTypeIds);
             var igvTypesDictionary = igvTypes.ToDictionary(it => it.Id);
 

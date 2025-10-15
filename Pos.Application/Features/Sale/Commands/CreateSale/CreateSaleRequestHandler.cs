@@ -59,10 +59,7 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
             var voucherSerie = await _voucherSerieRepository.GetByVoucherTypeAsync(voucherType.Id);
                 if (voucherSerie is null)
                 return Result<Guid>.Failure(new List<string> { $"No existe una serie para el tipo de comprobante '{voucherType.Description}'." }, 404);
-
-            var serie = voucherSerie.Serie;
-            var number = voucherSerie.GetNextNumber();
-
+            
             var currency = await _currencyRepository.GetByIdAsync(request.CurrencyId);
             if (currency is null)
                 return Result<Guid>.Failure(new List<string> { $"La moneda con ID '{request.CurrencyId}' no existe." }, 404);
@@ -81,7 +78,7 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
 
             var igvTypeIds = request.Details.Select(d => d.IGVTypeId).Distinct().ToList();
             var igvTypes = await _igvTypeRepository.GetByIdsAsync(igvTypeIds);
-            var igvTypesDcitionary = igvTypes.ToDictionary(it => it.Id);
+            var igvTypesDictionary = igvTypes.ToDictionary(it => it.Id);
 
             List<string> errors = new();
 
@@ -93,17 +90,43 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
                 if (!unitOfMeasuresDictionary.ContainsKey(detail.UnitOfMeasureId))
                     errors.Add($"La unidad de medida con ID '{detail.UnitOfMeasureId}' no existe.");
 
-                if (!igvTypesDcitionary.ContainsKey(detail.IGVTypeId))
+                if (!igvTypesDictionary.ContainsKey(detail.IGVTypeId))
                     errors.Add($"El tipo de IGV con ID '{detail.IGVTypeId}' no existe.");
             }
 
             if (errors.Any())
                 return Result<Guid>.Failure(errors, 404);
 
+            var inventories = await _inventoryRepository.GetByProductsAndWarehouse(productIds, warehouse.Id);
+            var inventoriesDictionary = inventories.ToDictionary(i => i.ProductId);
+
+            List<string> stockErrors = new();
+
+            foreach (var detail in request.Details)
+            {
+                if (!inventoriesDictionary.ContainsKey(detail.ProductId))
+                {
+                    var productName = productsDictionary[detail.ProductId].Name.Value;
+                    stockErrors.Add($"El producto '{productName}' no cuenta con inventario.");
+                }
+                else if (inventoriesDictionary[detail.ProductId].Stock.Value < detail.Quantity)
+                {
+                    var productName = productsDictionary[detail.ProductId].Name.Value;
+                    var available = inventoriesDictionary[detail.ProductId].Stock.Value;
+                    stockErrors.Add($"Stock insuficiente para '{productName}'. Disponible: {available}, Solicitado: {detail.Quantity}");
+                }
+            }
+
+            if (stockErrors.Any())
+                return Result<Guid>.Failure(stockErrors, 400);
+
+            var serie = voucherSerie.Serie;
+            var number = voucherSerie.GetNextNumber();
+
             var detailsInput = request.Details.Select(d => new SaleDetailInput(
                 d.ProductId,
                 d.UnitOfMeasureId,
-                igvTypesDcitionary[d.IGVTypeId],
+                igvTypesDictionary[d.IGVTypeId],
                 d.Quantity,
                 d.UnitPrice
                 )).ToList();
@@ -121,13 +144,9 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
 
             await _saleRepository.CreateAsync(sale);
 
-            var inventories = await _inventoryRepository.GetByProductsAndWarehouse(productIds, warehouse.Id);
-            var inventoriesDictionary = inventories.ToDictionary(i => i.ProductId);
-
             foreach (var detail in request.Details)
             {
-                if (inventoriesDictionary.TryGetValue(detail.ProductId, out var inventory))
-                    inventory.DecreaseStock(detail.Quantity);
+                inventoriesDictionary[detail.ProductId].DecreaseStock(detail.Quantity);
             }
 
             await _unitOfWork.SaveChangesAsync();
