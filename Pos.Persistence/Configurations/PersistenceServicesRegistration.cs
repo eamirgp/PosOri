@@ -2,8 +2,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Pos.Application.Contracts.Persistence;
+using Pos.Application.Contracts.Queries;
 using Pos.Persistence.Context;
 using Pos.Persistence.Repository;
+using Pos.Persistence.Repository.Queries;
 
 namespace Pos.Persistence.Configurations
 {
@@ -14,6 +16,7 @@ namespace Pos.Persistence.Configurations
             services.AddDbContext<PosDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DB")));
 
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IProductQueryRepository, ProductQueryRepository>();
             services.AddScoped<IIGVTypeRepository, IGVTypeRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IWarehouseRepository, WarehouseRepository>();

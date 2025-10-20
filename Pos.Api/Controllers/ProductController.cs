@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Pos.Application.Features.Product.Commands.CreateProduct;
 using Pos.Application.Features.Product.Commands.UpdateProduct;
+using Pos.Application.Features.Product.Queries.GetAllProducts;
 
 namespace Pos.Api.Controllers
 {
@@ -29,6 +30,13 @@ namespace Pos.Api.Controllers
             var newRequest = updateProductRequest with { Id = id };
             var response = await _sender.Send(newRequest);
             return NoContent();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            var response = await _sender.Send(new GetAllProductsRequest());
+            return Ok(response);
         }
     }
 }
