@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Pos.Application.Features.Product.Commands.CreateProduct;
 using Pos.Application.Features.Product.Commands.UpdateProduct;
 using Pos.Application.Features.Product.Queries.GetAllProducts;
+using Pos.Application.Shared.Pagination;
 
 namespace Pos.Api.Controllers
 {
@@ -33,9 +34,9 @@ namespace Pos.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync([FromQuery]PaginationParams param)
         {
-            var response = await _sender.Send(new GetAllProductsRequest());
+            var response = await _sender.Send(new GetAllProductsRequest(param));
             return Ok(response);
         }
     }
