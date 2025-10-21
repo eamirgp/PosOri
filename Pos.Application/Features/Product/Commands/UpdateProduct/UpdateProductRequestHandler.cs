@@ -1,34 +1,47 @@
 ﻿using MediatR;
 using Pos.Application.Contracts.Persistence;
+using Pos.Application.Shared.Result;
 
 namespace Pos.Application.Features.Product.Commands.UpdateProduct
 {
-    public class UpdateProductRequestHandler : IRequestHandler<UpdateProductRequest, Unit>
+    public class UpdateProductRequestHandler : IRequestHandler<UpdateProductRequest, Result<Unit>>
     {
         private readonly IProductRepository _productRepository;
+        private readonly IUnitOfMeasureRepository _unitOfMeasureRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateProductRequestHandler(IProductRepository productRepository, ICategoryRepository categoryRepository, IUnitOfWork unitOfWork)
+        public UpdateProductRequestHandler(
+            IProductRepository productRepository,
+            IUnitOfMeasureRepository unitOfMeasureRepository,
+            ICategoryRepository categoryRepository,
+            IUnitOfWork unitOfWork
+            )
         {
             _productRepository = productRepository;
+            _unitOfMeasureRepository = unitOfMeasureRepository;
             _categoryRepository = categoryRepository;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Unit> Handle(UpdateProductRequest request, CancellationToken cancellationToken)
+        public async Task<Result<Unit>> Handle(UpdateProductRequest request, CancellationToken cancellationToken)
         {
             var product = await _productRepository.GetByIdAsync(request.Id);
             if (product is null)
                 throw new Exception($"El producto con ID '{request.Id}' no existe.");
 
+            var unitOfMeasure = await _unitOfMeasureRepository.GetByIdAsync(request.UnitOfMeasureId);
+            if (unitOfMeasure is null)
+                return Result<Unit>.Failure(new List<string> { $"La unidad de medida con ID '{request.UnitOfMeasureId}' no existe" }, 404);
+
             var category = await _categoryRepository.GetByIdAsync(request.CategoryId);
             if (category is null)
-                throw new Exception($"La categoría con ID '{request.CategoryId}' no existe.");
+                return Result<Unit>.Failure(new List<string> { $"La categoría con ID '{request.CategoryId}' no existe." }, 404);
 
             if (await _productRepository.ExistCode(request.Code, product.Id))
-                throw new Exception($"El código '{request.Code}' ya existe.");
+                return Result<Unit>.Failure(new List<string> { $"El código '{request.Code}' ya existe." }, 409);
 
+            product.UpdateUnitOfMeasure(unitOfMeasure.Id);
             product.UpdateCategory(category.Id);
             product.UpdateCode(request.Code);
             product.UpdateName(request.Name);
@@ -38,7 +51,7 @@ namespace Pos.Application.Features.Product.Commands.UpdateProduct
 
             await _unitOfWork.SaveChangesAsync();
 
-            return Unit.Value;
+            return Result<Unit>.Success(Unit.Value);
         }
     }
 }

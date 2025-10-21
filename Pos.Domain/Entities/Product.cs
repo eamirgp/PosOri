@@ -5,6 +5,7 @@ namespace Pos.Domain.Entities
 {
     public class Product : BaseEntity
     {
+        public Guid UnitOfMeasureId { get; private set; }
         public Guid CategoryId { get; private set; }
         public Code Code { get; private set; } = default!;
         public Name Name { get; private set; } = default!;
@@ -14,8 +15,9 @@ namespace Pos.Domain.Entities
 
         protected Product() { }
 
-        private Product(Guid categoryId, Code code, Name name, Description? description, PurchasePrice purchasePrice, SalePrice salePrice)
+        private Product(Guid unitOfMeasureId, Guid categoryId, Code code, Name name, Description? description, PurchasePrice purchasePrice, SalePrice salePrice)
         {
+            UnitOfMeasureId = unitOfMeasureId;
             CategoryId = categoryId;
             Code = code;
             Name = name;
@@ -24,7 +26,7 @@ namespace Pos.Domain.Entities
             SalePrice = salePrice;
         }
 
-        public static Product Create(Guid categoryId, string code, string name, string? description, decimal purchasePrice, decimal salePrice)
+        public static Product Create(Guid unitOfMeasureId, Guid categoryId, string code, string name, string? description, decimal purchasePrice, decimal salePrice)
         {
             var codeVO = Code.Create(code);
             var nameVO = Name.Create(name);
@@ -32,7 +34,12 @@ namespace Pos.Domain.Entities
             var purchasePriceVO = PurchasePrice.Create(purchasePrice);
             var salePriceVO = SalePrice.Create(salePrice);
 
-            return new(categoryId, codeVO, nameVO, descriptionVO, purchasePriceVO, salePriceVO);
+            return new(unitOfMeasureId, categoryId, codeVO, nameVO, descriptionVO, purchasePriceVO, salePriceVO);
+        }
+
+        public void UpdateUnitOfMeasure(Guid unitOfMeasureId)
+        {
+            UnitOfMeasureId = unitOfMeasureId;
         }
 
         public void UpdateCategory(Guid categoryId)

@@ -13,6 +13,12 @@ namespace Pos.Persistence.Configurations
             builder.Property(p => p.Id)
                 .IsRequired();
 
+            builder.Property(p => p.UnitOfMeasureId)
+                .IsRequired();
+
+            builder.Property(p => p.CategoryId)
+                .IsRequired();
+
             builder.OwnsOne(p => p.Code, code =>
             {
                 code.Property(c => c.Value)
@@ -54,6 +60,11 @@ namespace Pos.Persistence.Configurations
 
             builder.Property(p => p.CreatedDate)
                 .IsRequired();
+
+            builder.HasOne<UnitOfMeasure>()
+                .WithMany()
+                .HasForeignKey(p => p.UnitOfMeasureId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne<Category>()
                 .WithMany()

@@ -22,7 +22,9 @@ namespace Pos.Api.Controllers
         public async Task<IActionResult> CreateAsync([FromBody]CreateProductRequest createProductRequest)
         {
             var response = await _sender.Send(createProductRequest);
-            return Created(string.Empty, response);
+            return response.IsSuccess
+                ? Created(string.Empty, new { productId = response.Value })
+                : StatusCode(response.StatusCode, new { errors = response.Errors });
         }
 
         [HttpPut("{id}")]
@@ -30,7 +32,9 @@ namespace Pos.Api.Controllers
         {
             var newRequest = updateProductRequest with { Id = id };
             var response = await _sender.Send(newRequest);
-            return NoContent();
+            return response.IsSuccess
+                ? NoContent()
+                : StatusCode(response.StatusCode, new { errors = response.Errors });
         }
 
         [HttpGet]

@@ -41,10 +41,13 @@ namespace Pos.Persistence.Repository.Queries
                     p.Name,
                     p.Description,
                     p.PurchasePrice,
-                    p.SalePrice
+                    p.SalePrice,
+                    ISNULL(SUM(i.Stock), 0) as TotalStock
                 FROM Products p
                 INNER JOIN Categories c ON p.CategoryId = c.Id
+                LEFT JOIN Inventories i ON p.Id = i.ProductId
                 {whereClause}
+                GROUP BY p.Id, p.CategoryId, c.Name, p.Code, p.Name, p.Description, p.PurchasePrice, p.SalePrice, p.CreatedDate
                 ORDER BY p.CreatedDate DESC
                 OFFSET @Offset ROWS
                 FETCH NEXT @PageSize ROWS ONLY";
