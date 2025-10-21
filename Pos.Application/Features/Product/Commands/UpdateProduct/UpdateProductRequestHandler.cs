@@ -28,7 +28,7 @@ namespace Pos.Application.Features.Product.Commands.UpdateProduct
         {
             var product = await _productRepository.GetByIdAsync(request.Id);
             if (product is null)
-                throw new Exception($"El producto con ID '{request.Id}' no existe.");
+                return Result<Unit>.Failure(new List<string> { $"El producto con ID '{request.Id}' no existe." }, 404);
 
             var unitOfMeasure = await _unitOfMeasureRepository.GetByIdAsync(request.UnitOfMeasureId);
             if (unitOfMeasure is null)

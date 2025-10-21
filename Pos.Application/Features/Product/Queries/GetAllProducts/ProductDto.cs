@@ -2,6 +2,8 @@
 {
     public record ProductDto(
         Guid Id,
+        Guid UnitOfMeasureId,
+        string UnitOfMeasureDescription,
         Guid CategoryId,
         string CategoryName,
         string Code,
