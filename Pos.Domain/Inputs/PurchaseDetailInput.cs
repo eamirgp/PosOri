@@ -3,8 +3,7 @@
 namespace Pos.Domain.Inputs
 {
     public record PurchaseDetailInput(
-        Guid ProductId,
-        Guid UnitOfMeasureId,
+        Product Product,
         IGVType IGVType,
         decimal Quantity,
         decimal UnitValue

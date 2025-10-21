@@ -57,7 +57,7 @@ namespace Pos.Persistence.Configurations
                 .WithMany(p => p.PurchaseDetails)
                 .HasForeignKey(pd => pd.PurchaseId);
 
-            builder.HasOne<Product>()
+            builder.HasOne(pd => pd.Product)
                 .WithMany()
                 .HasForeignKey(pd => pd.ProductId);
 

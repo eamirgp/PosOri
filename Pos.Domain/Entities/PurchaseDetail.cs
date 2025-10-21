@@ -17,16 +17,18 @@ namespace Pos.Domain.Entities
         public decimal LineTotal { get; private set; }
 
         public Purchase Purchase { get; private set; } = default!;
+        public Product Product { get; private set; } = default!;
         public IGVType IGVType { get; private set; } = default!;
 
         protected PurchaseDetail() { }
 
-        private PurchaseDetail(Purchase purchase, Guid productId, Guid unitOfMeasureId, IGVType igvType, Quantity quantity, UnitValue unitValue)
+        private PurchaseDetail(Purchase purchase, Product product, IGVType igvType, Quantity quantity, UnitValue unitValue)
         {
             Purchase = purchase;
             PurchaseId = purchase.Id;
-            ProductId = productId;
-            UnitOfMeasureId = unitOfMeasureId;
+            Product = product;
+            ProductId = product.Id;
+            UnitOfMeasureId = product.UnitOfMeasureId;
             IGVType = igvType;
             IGVTypeId = igvType.Id;
             Quantity = quantity;
@@ -36,12 +38,12 @@ namespace Pos.Domain.Entities
             LineTotal = CalculateLineTotal();
         }
 
-        public static PurchaseDetail Create(Purchase purchase, Guid productId, Guid unitOfMeasureId, IGVType igvType, decimal quantity, decimal unitValue)
+        public static PurchaseDetail Create(Purchase purchase, Product product, IGVType igvType, decimal quantity, decimal unitValue)
         {
             var quantityVO = Quantity.Create(quantity);
             var unitValueVO = UnitValue.Create(unitValue);
 
-            return new(purchase, productId, unitOfMeasureId, igvType, quantityVO, unitValueVO);
+            return new(purchase, product, igvType, quantityVO, unitValueVO);
         }
 
         private decimal CalculateAmount()
