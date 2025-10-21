@@ -14,7 +14,6 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
         private readonly ICurrencyRepository _currencyRepository;
         private readonly IPersonRepository _personRepository;
         private readonly IProductRepository _productRepository;
-        private readonly IUnitOfMeasureRepository _unitOfMeasureRepository;
         private readonly IIGVTypeRepository _igvTypeRepository;
         private readonly IInventoryRepository _inventoryRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -27,7 +26,6 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
             ICurrencyRepository currencyRepository,
             IPersonRepository personRepository,
             IProductRepository productRepository,
-            IUnitOfMeasureRepository unitOfMeasureRepository,
             IIGVTypeRepository igvTypeRepository,
             IInventoryRepository inventoryRepository,
             IUnitOfWork unitOfWork
@@ -40,7 +38,6 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
             _currencyRepository = currencyRepository;
             _personRepository = personRepository;
             _productRepository = productRepository;
-            _unitOfMeasureRepository = unitOfMeasureRepository;
             _igvTypeRepository = igvTypeRepository;
             _inventoryRepository = inventoryRepository;
             _unitOfWork = unitOfWork;
@@ -72,10 +69,6 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
             var products = await _productRepository.GetByIdsAsync(productIds);
             var productsDictionary = products.ToDictionary(p => p.Id);
 
-            var unitOfMeasureIds = request.Details.Select(d => d.UnitOfMeasureId).Distinct().ToList();
-            var unitOfMeasures = await _unitOfMeasureRepository.GetByIdsAsync(unitOfMeasureIds);
-            var unitOfMeasuresDictionary = unitOfMeasures.ToDictionary(um => um.Id);
-
             var igvTypeIds = request.Details.Select(d => d.IGVTypeId).Distinct().ToList();
             var igvTypes = await _igvTypeRepository.GetByIdsAsync(igvTypeIds);
             var igvTypesDictionary = igvTypes.ToDictionary(it => it.Id);
@@ -86,9 +79,6 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
             {
                 if (!productsDictionary.ContainsKey(detail.ProductId))
                     errors.Add($"El producto con ID '{detail.ProductId}' no existe.");
-
-                if (!unitOfMeasuresDictionary.ContainsKey(detail.UnitOfMeasureId))
-                    errors.Add($"La unidad de medida con ID '{detail.UnitOfMeasureId}' no existe.");
 
                 if (!igvTypesDictionary.ContainsKey(detail.IGVTypeId))
                     errors.Add($"El tipo de IGV con ID '{detail.IGVTypeId}' no existe.");
@@ -124,8 +114,7 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
             var number = voucherSerie.GetNextNumber();
 
             var detailsInput = request.Details.Select(d => new SaleDetailInput(
-                d.ProductId,
-                d.UnitOfMeasureId,
+                productsDictionary[d.ProductId],
                 igvTypesDictionary[d.IGVTypeId],
                 d.Quantity,
                 d.UnitPrice

@@ -61,10 +61,6 @@ namespace Pos.Persistence.Configurations
                 .WithMany()
                 .HasForeignKey(pd => pd.ProductId);
 
-            builder.HasOne<UnitOfMeasure>()
-                .WithMany()
-                .HasForeignKey(pd => pd.UnitOfMeasureId);
-
             builder.HasOne(pd => pd.IGVType)
                 .WithMany()
                 .HasForeignKey(pd => pd.IGVTypeId);

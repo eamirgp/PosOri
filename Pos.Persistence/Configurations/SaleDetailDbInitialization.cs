@@ -60,13 +60,9 @@ namespace Pos.Persistence.Configurations
                 .WithMany(s => s.SaleDetails)
                 .HasForeignKey(sd => sd.SaleId);
 
-            builder.HasOne<Product>()
+            builder.HasOne(sd => sd.Product)
                 .WithMany()
                 .HasForeignKey(sd => sd.ProductId);
-
-            builder.HasOne<UnitOfMeasure>()
-                .WithMany()
-                .HasForeignKey(sd => sd.UnitOfMeasureId);
 
             builder.HasOne(sd => sd.IGVType)
                 .WithMany()

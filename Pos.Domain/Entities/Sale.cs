@@ -42,7 +42,7 @@ namespace Pos.Domain.Entities
 
             foreach (var detail in details)
             {
-                sale.AddSaleDetail(detail.ProductId, detail.UnitOfMeasureId, detail.IGVType, detail.Quantity, detail.UnitPrice);
+                sale.AddSaleDetail(detail.Product, detail.IGVType, detail.Quantity, detail.UnitPrice);
             }
 
             sale.CalculateTotal();
@@ -57,9 +57,9 @@ namespace Pos.Domain.Entities
             Total = SaleDetails.Sum(sd => sd.LineTotal);
         }
 
-        private void AddSaleDetail(Guid productId, Guid unitOfMeasureId, IGVType igvType, decimal quantity, decimal unitPrice)
+        private void AddSaleDetail(Product product, IGVType igvType, decimal quantity, decimal unitPrice)
         {
-            var saleDetail = SaleDetail.Create(this, productId, unitOfMeasureId, igvType, quantity, unitPrice);
+            var saleDetail = SaleDetail.Create(this, product, igvType, quantity, unitPrice);
             SaleDetails.Add(saleDetail);
         }
 
@@ -71,7 +71,7 @@ namespace Pos.Domain.Entities
 
         private static void ValidateNoDuplicateProducts(List<SaleDetailInput> details)
         {
-            if (details.Select(d => d.ProductId).Distinct().Count() != details.Count)
+            if (details.Select(d => d.Product.Id).Distinct().Count() != details.Count)
                 throw new ArgumentException("No puede haber productos duplicados.");
         }
     }
