@@ -38,7 +38,7 @@ namespace Pos.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync([FromQuery]PaginationParams param)
+        public async Task<ActionResult<PaginatedResult<ProductDto>>> GetAllAsync([FromQuery]PaginationParams param)
         {
             var response = await _sender.Send(new GetAllProductsRequest(param));
             return Ok(response);

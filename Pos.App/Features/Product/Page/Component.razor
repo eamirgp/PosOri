@@ -1,0 +1,140 @@
+﻿@page "/producfrtt"
+@using Pos.App.Service
+@inject PosApiClient PosApi
+@implements IDisposable
+
+<div class="container d-flex justify-content-between align-items-center mb-2">
+    <button class="btn btn-primary">
+        <i class="bi bi-plus"></i>
+        Crear producto
+    </button>
+    <input type="text" class="form-control w-auto" placeholder="Buscar..." @oninput="OnSearchChanged" />
+</div>
+
+<div class="container">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Unidad de medida</th>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Precio de compra</th>
+                <th>Precio de venta</th>
+                <th>Stock</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in _products.Items)
+            {
+                <tr>
+                    <td>@product.Code</td>
+                    <td>@product.UnitOfMeasureDescription</td>
+                    <td>@product.Name</td>
+                    <td>@product.CategoryName</td>
+                    <td>@product.PurchasePrice</td>
+                    <td>@product.SalePrice</td>
+                    <td>@product.TotalStock</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm">
+                            <i class="bi bi-trash3-fill"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <nav aria-label="Paginación de productos">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(!_products.HasPreviousPage ? "disabled" : "")">
+                <a class="page-link" @onclick="() => GoToPage(1)" tabindex="@(!_products.HasPreviousPage ? "-1" : "0")">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item @(!_products.HasPreviousPage ? "disabled" : "")">
+                <a class="page-link" @onclick="PreviousPage" tabindex="@(!_products.HasPreviousPage ? "-1" : "0")">Anterior</a>
+            </li>
+            <li class="page-item active">
+                <span class="page-link">@_products.PageNumber</span>
+            </li>
+            <li class="page-item @(!_products.HasNextPage ? "disabled" : "")">
+                <a class="page-link" @onclick="NextPage" tabindex="@(!_products.HasNextPage ? "-1" : "0")">Siguiente</a>
+            </li>
+            <li class="page-item @(!_products.HasNextPage ? "disabled" : "")">
+                <a class="page-link" @onclick="() => GoToPage(_products.TotalPages)" tabindex="@(!_products.HasNextPage ? "-1" : "0")">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+@code {
+    private ProductDtoPaginatedResult _products = new();
+    private int _pageNumber = 1;
+    private int _pageSize = 10;
+    private string? _searchTerm;
+    private Timer? _debounceTimer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProducts();
+    }
+
+    private async Task LoadProducts()
+    {
+        _products = await PosApi.ProductGETAsync(_pageNumber, _pageSize, _searchTerm);
+    }
+
+    private void OnSearchChanged(ChangeEventArgs e)
+    {
+        _searchTerm = e.Value?.ToString();
+        _debounceTimer?.Dispose();
+        _debounceTimer = new Timer(async _ =>
+        {
+            _pageNumber = 1; // Reset a la primera página al buscar
+            await InvokeAsync(async () =>
+            {
+                await LoadProducts();
+                StateHasChanged();
+            });
+        }, null, 500, Timeout.Infinite);
+    }
+
+    private async Task PreviousPage()
+    {
+        if (_products.HasPreviousPage)
+        {
+            _pageNumber--;
+            await LoadProducts();
+        }
+    }
+
+    private async Task NextPage()
+    {
+        if (_products.HasNextPage)
+        {
+            _pageNumber++;
+            await LoadProducts();
+        }
+    }
+
+    private async Task GoToPage(int page)
+    {
+        if (page >= 1 && page <= _products.TotalPages)
+        {
+            _pageNumber = page;
+            await LoadProducts();
+        }
+    }
+
+    public void Dispose()
+    {
+        _debounceTimer?.Dispose();
+    }
+}

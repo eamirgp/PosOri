@@ -1,3 +1,4 @@
+using Pos.Api.Configurations;
 using Pos.Application.Configurations;
 using Pos.Persistence.Configurations;
 
@@ -13,15 +14,27 @@ namespace Pos.Api
 
             builder.Services.AddControllers();
 
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
             builder.Services
                 .AddPersistenceServices(builder.Configuration)
-                .AddApplicationServices();
+                .AddApplicationServices()
+                .AddApiServices();
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
 
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
             app.UseHttpsRedirection();
+
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 
