@@ -19,7 +19,7 @@ namespace Pos.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody]CreateProductRequest createProductRequest)
+        public async Task<ActionResult> CreateAsync([FromBody]CreateProductRequest createProductRequest)
         {
             var response = await _sender.Send(createProductRequest);
             return response.IsSuccess
@@ -28,7 +28,7 @@ namespace Pos.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody]UpdateProductRequest updateProductRequest)
+        public async Task<ActionResult> UpdateAsync(Guid id, [FromBody]UpdateProductRequest updateProductRequest)
         {
             var newRequest = updateProductRequest with { Id = id };
             var response = await _sender.Send(newRequest);

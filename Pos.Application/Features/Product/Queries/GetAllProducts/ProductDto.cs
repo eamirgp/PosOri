@@ -3,9 +3,11 @@
     public record ProductDto(
         Guid Id,
         Guid UnitOfMeasureId,
-        string UnitOfMeasureDescription,
+        string UnitOfMeasure,
+        Guid IGVTypeId,
+        string IGVType,
         Guid CategoryId,
-        string CategoryName,
+        string Category,
         string Code,
         string Name,
         string? Description,

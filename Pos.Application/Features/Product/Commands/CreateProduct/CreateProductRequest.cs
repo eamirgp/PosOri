@@ -5,6 +5,7 @@ namespace Pos.Application.Features.Product.Commands.CreateProduct
 {
     public record CreateProductRequest(
         Guid UnitOfMeasureId,
+        Guid IGVTypeId,
         Guid CategoryId,
         string Code,
         string Name,

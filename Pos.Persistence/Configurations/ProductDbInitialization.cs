@@ -16,6 +16,9 @@ namespace Pos.Persistence.Configurations
             builder.Property(p => p.UnitOfMeasureId)
                 .IsRequired();
 
+            builder.Property(p => p.IGVTypeId)
+                .IsRequired();
+
             builder.Property(p => p.CategoryId)
                 .IsRequired();
 
@@ -64,6 +67,11 @@ namespace Pos.Persistence.Configurations
             builder.HasOne<UnitOfMeasure>()
                 .WithMany()
                 .HasForeignKey(p => p.UnitOfMeasureId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne<IGVType>()
+                .WithMany()
+                .HasForeignKey(p => p.IGVTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne<Category>()

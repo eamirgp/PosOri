@@ -8,18 +8,21 @@ namespace Pos.Application.Features.Product.Commands.CreateProduct
     {
         private readonly IProductRepository _productRepository;
         private readonly IUnitOfMeasureRepository _unitOfMeasureRepository;
+        private readonly IIGVTypeRepository _igvTypeRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public CreateProductRequestHandler(
             IProductRepository productRepository,
             IUnitOfMeasureRepository unitOfMeasureRepository,
+            IIGVTypeRepository igvTypeRepository,
             ICategoryRepository categoryRepository,
             IUnitOfWork unitOfWork
             )
         {
             _productRepository = productRepository;
             _unitOfMeasureRepository = unitOfMeasureRepository;
+            _igvTypeRepository = igvTypeRepository;
             _categoryRepository = categoryRepository;
             _unitOfWork = unitOfWork;
         }
@@ -30,6 +33,10 @@ namespace Pos.Application.Features.Product.Commands.CreateProduct
             if (unitOfMeasure is null)
                 return Result<Guid>.Failure(new List<string> { $"La unidad de medida con ID '{request.UnitOfMeasureId}' no existe." }, 404);
 
+            var igvType = await _igvTypeRepository.GetByIdAsync(request.IGVTypeId);
+            if (igvType is null)
+                return Result<Guid>.Failure(new List<string> { $"El tipo de IGV con ID '{request.IGVTypeId}' no existe." }, 404);
+
             var category = await _categoryRepository.GetByIdAsync(request.CategoryId);
             if (category is null)
                 return Result<Guid>.Failure(new List<string> { $"La categoría con ID '{request.CategoryId}' no existe." }, 404);
@@ -39,6 +46,7 @@ namespace Pos.Application.Features.Product.Commands.CreateProduct
 
             var product = Domain.Entities.Product.Create(
                 unitOfMeasure.Id,
+                igvType.Id,
                 category.Id,
                 request.Code,
                 request.Name,

@@ -1,0 +1,246 @@
+﻿@using Pos.App.Service
+@inject PosApiClient PosApi
+
+<div class="modal fade @(_show ? "show d-block" : "")" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Crear Producto</h5>
+                <button type="button" class="btn-close" @onclick="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if (_errors.Any())
+                {
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach (var error in _errors)
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+                <form>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Unidad de Medida <span class="text-danger">*</span></label>
+                            <select class="form-select" @bind="_request.UnitOfMeasureId">
+                                <option value="@Guid.Empty">Seleccione...</option>
+                                @foreach (var unit in _unitOfMeasures)
+                                {
+                                    <option value="@unit.Id">@unit.Description</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Categoría <span class="text-danger">*</span></label>
+                            <select class="form-select" @bind="_request.CategoryId">
+                                <option value="@Guid.Empty">Seleccione...</option>
+                                @foreach (var category in _categories)
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Código <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" @bind="_request.Code" maxlength="20" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Nombre <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" @bind="_request.Name" maxlength="100" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Descripción</label>
+                        <textarea class="form-control" @bind="_request.Description" rows="3" maxlength="200"></textarea>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Precio de Compra <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" @bind="_request.PurchasePrice" step="0.01" min="0" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Precio de Venta <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" @bind="_request.SalePrice" step="0.01" min="0" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @onclick="Close" disabled="@_isSubmitting">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" @onclick="Submit" disabled="@_isSubmitting">
+                    @if (_isSubmitting)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                    }
+                    Crear Producto
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public EventCallback OnProductCreated { get; set; }
+
+    private bool _show = false;
+    private bool _isSubmitting = false;
+    private List<string> _errors = new();
+
+    private CreateProductRequest _request = new()
+    {
+        UnitOfMeasureId = Guid.Empty,
+        CategoryId = Guid.Empty,
+        Code = string.Empty,
+        Name = string.Empty,
+        Description = null,
+        PurchasePrice = 0,
+        SalePrice = 0
+    };
+
+    private List<UnitOfMeasureItem> _unitOfMeasures = new();
+    private List<CategoryItem> _categories = new();
+
+    public async Task Open()
+    {
+        _show = true;
+        _errors.Clear();
+        ResetForm();
+        await LoadCatalogData();
+        StateHasChanged();
+    }
+
+    private void Close()
+    {
+        _show = false;
+        StateHasChanged();
+    }
+
+    private async Task LoadCatalogData()
+    {
+        try
+        {
+            // Aquí cargarías las unidades de medida y categorías desde tu API
+            // Por ahora, datos de ejemplo basados en tu seed data
+            _unitOfMeasures = new List<UnitOfMeasureItem>
+            {
+                new UnitOfMeasureItem { Id = Guid.Parse("cc5cfa04-65b3-4cb2-9cd4-40c1a6c98b73"), Description = "Caja" },
+                new UnitOfMeasureItem { Id = Guid.Parse("e6dff931-a8aa-4c6f-9e5f-e784c1af1c08"), Description = "Docena" },
+                new UnitOfMeasureItem { Id = Guid.Parse("f6c0baf5-f900-41d9-a1dd-ede1d927c2e2"), Description = "Unidad" }
+            };
+
+            // Las categorías vendrían de un endpoint GET en tu CategoryController
+            // _categories = await PosApi.CategoryGETAsync();
+        }
+        catch (Exception ex)
+        {
+            _errors.Add($"Error al cargar datos: {ex.Message}");
+        }
+    }
+
+    private async Task Submit()
+    {
+        _errors.Clear();
+
+        if (!ValidateForm())
+            return;
+
+        _isSubmitting = true;
+        StateHasChanged();
+
+        try
+        {
+            await PosApi.ProductPOSTAsync(_request);
+            await OnProductCreated.InvokeAsync();
+            Close();
+        }
+        catch (ApiException ex)
+        {
+            if (ex.StatusCode == 404 || ex.StatusCode == 409)
+            {
+                var errorResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(ex.Response);
+                if (errorResponse?.Errors != null)
+                {
+                    _errors.AddRange(errorResponse.Errors);
+                }
+            }
+            else
+            {
+                _errors.Add($"Error al crear el producto: {ex.Message}");
+            }
+        }
+        catch (Exception ex)
+        {
+            _errors.Add($"Error inesperado: {ex.Message}");
+        }
+        finally
+        {
+            _isSubmitting = false;
+            StateHasChanged();
+        }
+    }
+
+    private bool ValidateForm()
+    {
+        if (_request.UnitOfMeasureId == Guid.Empty)
+            _errors.Add("Debe seleccionar una unidad de medida.");
+
+        if (_request.CategoryId == Guid.Empty)
+            _errors.Add("Debe seleccionar una categoría.");
+
+        if (string.IsNullOrWhiteSpace(_request.Code))
+            _errors.Add("El código es requerido.");
+
+        if (string.IsNullOrWhiteSpace(_request.Name))
+            _errors.Add("El nombre es requerido.");
+
+        if (_request.PurchasePrice < 0)
+            _errors.Add("El precio de compra debe ser mayor o igual a 0.");
+
+        if (_request.SalePrice < 0)
+            _errors.Add("El precio de venta debe ser mayor o igual a 0.");
+
+        return !_errors.Any();
+    }
+
+    private void ResetForm()
+    {
+        _request = new CreateProductRequest
+        {
+            UnitOfMeasureId = Guid.Empty,
+            CategoryId = Guid.Empty,
+            Code = string.Empty,
+            Name = string.Empty,
+            Description = null,
+            PurchasePrice = 0,
+            SalePrice = 0
+        };
+    }
+
+    // Clases auxiliares para los datos de catálogo
+    private class UnitOfMeasureItem
+    {
+        public Guid Id { get; set; }
+        public string Description { get; set; } = string.Empty;
+    }
+
+    private class CategoryItem
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+    }
+
+    private class ErrorResponse
+    {
+        public List<string>? Errors { get; set; }
+    }
+}

@@ -36,9 +36,11 @@ namespace Pos.Persistence.Repository.Queries
                 SELECT
                     p.Id,
                     p.UnitOfMeasureId,
-                    um.Description as UnitOfMeasureDescription,
+                    um.Description as UnitOfMeasure,
+                    p.IGVTypeId,
+                    it.Description as IGVType,
                     p.CategoryId,
-                    c.Name as CategoryName,
+                    c.Name as Category,
                     p.Code,
                     p.Name,
                     p.Description,
@@ -46,11 +48,12 @@ namespace Pos.Persistence.Repository.Queries
                     p.SalePrice,
                     ISNULL(SUM(i.Stock), 0) as TotalStock
                 FROM Products p
-                INNER JOIN UnitOfMeasures um ON p.unitOfMeasureId = um.Id
+                INNER JOIN UnitOfMeasures um ON p.UnitOfMeasureId = um.Id
+                INNER JOIN IGVTypes it ON p.IGVTypeId = it.Id
                 INNER JOIN Categories c ON p.CategoryId = c.Id
                 LEFT JOIN Inventories i ON p.Id = i.ProductId
                 {whereClause}
-                GROUP BY p.Id, p.UnitOfMeasureId, um.Description, p.CategoryId, c.Name, p.Code, p.Name, p.Description, p.PurchasePrice, p.SalePrice, p.CreatedDate
+                GROUP BY p.Id, p.UnitOfMeasureId, um.Description, p.IGVTypeId, it.Description, p.CategoryId, c.Name, p.Code, p.Name, p.Description, p.PurchasePrice, p.SalePrice, p.CreatedDate
                 ORDER BY p.CreatedDate DESC
                 OFFSET @Offset ROWS
                 FETCH NEXT @PageSize ROWS ONLY";
