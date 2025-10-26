@@ -43,7 +43,6 @@
                         <td>@product.Category</td>
                         <td>@product.PurchasePrice.ToString("N2")</td>
                         <td>@product.SalePrice.ToString("N2")</td>
-                        <td>@product.TotalStock.ToString("N2")</td>
                         <td>
                             <button class="btn btn-primary btn-sm">
                                 <i class="bi bi-pencil-square"></i>
@@ -136,7 +135,7 @@
 
     private async Task OpenCreateModal()
     {
-        await _createModal.Open();
+
     }
 
     private async Task OnProductCreated()

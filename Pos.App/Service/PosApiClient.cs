@@ -1280,9 +1280,6 @@ namespace Pos.App.Service
         [Newtonsoft.Json.JsonProperty("salePrice", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double SalePrice { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("totalStock", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public double TotalStock { get; set; }
-
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.5.0.0 (NJsonSchema v11.4.0.0 (Newtonsoft.Json v13.0.0.0))")]

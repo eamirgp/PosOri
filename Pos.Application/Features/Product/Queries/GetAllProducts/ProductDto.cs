@@ -12,7 +12,6 @@
         string Name,
         string? Description,
         decimal PurchasePrice,
-        decimal SalePrice,
-        decimal TotalStock
+        decimal SalePrice
         );
 }
