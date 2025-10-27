@@ -19,6 +19,8 @@ namespace Pos.Api.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<ActionResult> CreateAsync([FromBody]CreateProductRequest createProductRequest)
         {
             var response = await _sender.Send(createProductRequest);
@@ -28,6 +30,7 @@ namespace Pos.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult> UpdateAsync(Guid id, [FromBody]UpdateProductRequest updateProductRequest)
         {
             var newRequest = updateProductRequest with { Id = id };
@@ -38,6 +41,7 @@ namespace Pos.Api.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedResult<ProductDto>>> GetAllAsync([FromQuery]PaginationParams param)
         {
             var response = await _sender.Send(new GetAllProductsRequest(param));

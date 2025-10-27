@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Pos.Application.Features.Category.Commands.CreateCategory;
 using Pos.Application.Features.Category.Commands.UpdateCategory;
+using Pos.Application.Features.Category.Queries.GetAllCategories;
 
 namespace Pos.Api.Controllers
 {
@@ -29,6 +30,13 @@ namespace Pos.Api.Controllers
             var newRequest = updateCategoryRequest with { Id = id };
             var response = await _sender.Send(newRequest);
             return NoContent();
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<CategoryDto>>> GetAllAsync()
+        {
+            var response = await _sender.Send(new GetAllCategoriesRequest());
+            return Ok(response);
         }
     }
 }

@@ -18,7 +18,9 @@ namespace Pos.Persistence.Configurations
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductQueryRepository, ProductQueryRepository>();
             services.AddScoped<IIGVTypeRepository, IGVTypeRepository>();
+            services.AddScoped<IIGVTypeQueryRepository, IGVTypeQueryRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ICategoryQueryRepository, CategoryQueryRepository>();
             services.AddScoped<IWarehouseRepository, WarehouseRepository>();
             services.AddScoped<IInventoryRepository, InventoryRepository>();
             services.AddScoped<IPersonRepository, PersonRepository>();
@@ -29,6 +31,7 @@ namespace Pos.Persistence.Configurations
             services.AddScoped<IVoucherSerieRepository, VoucherSerieRepository>();
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
             services.AddScoped<IUnitOfMeasureRepository, UnitOfMeasureRepository>();
+            services.AddScoped<IUnitOfMeasureQueryRepository, UnitOfMeasureQueryRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;

@@ -23,22 +23,34 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label class="form-label">Unidad de medida</label>
+                        <div class="col-md-3">
+                            <label class="form-label">Unidad medida</label>
                             <select class="form-select" @bind="_product.UnitOfMeasureId">
-                                <option value="@Guid.Parse("F6C0BAF5-F900-41D9-A1DD-EDE1D927C2E2")">Seleccione...</option>
+                                <option value="@Guid.Empty" disabled>Seleccione</option>
+                                @foreach (var unitOfMeasure in _unitOfMeasure)
+                                {
+                                    <option value="@unitOfMeasure.Id">@unitOfMeasure.Description</option>
+                                }
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-5">
                             <label class="form-label">Afectación IGV</label>
                             <select class="form-select" @bind="_product.IgvTypeId">
-                                <option value="@Guid.Parse("87F49009-4041-4A62-953A-27A303286E89")">Seleccione...</option>
+                                <option value="@Guid.Empty" disabled>Seleccione</option>
+                                @foreach (var igvType in _igvTypes)
+                                {
+                                    <option value="@igvType.Id">@igvType.Description</option>
+                                }
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Categoría</label>
                             <select class="form-select" @bind="_product.CategoryId">
-                                <option value="@Guid.Parse("48B23412-025A-4895-BE10-10EE7ED076C7")">Seleccione...</option>
+                                <option value="@Guid.Empty" disabled>Seleccione</option>
+                                @foreach (var category in _categories)
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                }
                             </select>
                         </div>
                     </div>
@@ -61,7 +73,12 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" @onclick="Close">Cancelar</button>
-                <button type="button" class="btn btn-primary" @onclick="Submit">Crear producto</button>
+                <button type="button" class="btn btn-primary" disabled="@_loading" @onclick="Submit">
+                    @if (_loading)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                    }
+                    Crear producto</button>
             </div>
         </div>
     </div>
@@ -69,11 +86,31 @@
 
 @code{
     private bool _show = false;
+    private bool _loading = false;
     private CreateProductRequest _product = new();
+    private List<UnitOfMeasureDto> _unitOfMeasure = new();
+    private List<IGVTypeDto> _igvTypes = new();
+    private List<CategoryDto> _categories = new();
+
+    [Parameter]
+    public EventCallback OnProductCreated { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCatalogs();
+    }
+
+    private async Task LoadCatalogs()
+    {
+        _unitOfMeasure = (await PosApi.UnitOfMeasureAsync()).ToList();
+        _igvTypes = (await PosApi.IGVTypeAsync()).ToList();
+        _categories = (await PosApi.CategoryAllAsync()).ToList();
+    }
 
     public void Open()
     {
         _show = true;
+        _product = new();
         StateHasChanged();
     }
 
@@ -85,6 +122,17 @@
 
     public async Task Submit()
     {
-        await PosApi.ProductPOSTAsync(_product);
+        _loading = true;
+
+        try
+        {
+            await PosApi.ProductPOSTAsync(_product);
+            Close();
+            await OnProductCreated.InvokeAsync();
+        }
+        finally
+        {
+            _loading = false;
+        }
     }
 }

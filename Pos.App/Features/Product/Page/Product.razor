@@ -110,7 +110,7 @@
     </div>
 </div>
 
-<CreateProductModal @ref="_createModal" />
+<CreateProductModal @ref="_createModal" OnProductCreated="OnProductCreated" />
 
 @code {
     private ProductDtoPaginatedResult _products = new();
@@ -177,5 +177,10 @@
     private void OpenCreateModal()
     {
         _createModal.Open();
+    }
+    private async Task OnProductCreated()
+    {
+        _pageNumber = 1;
+        await LoadProducts();
     }
 }
