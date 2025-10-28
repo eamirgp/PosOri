@@ -1,1 +1,166 @@
-﻿
+﻿@using Pos.App.Features.Category.Models
+@using Pos.App.Features.IGVType.Models
+@using Pos.App.Features.Product.Models
+@using Pos.App.Features.UnitOfMeasure.Models
+@using Pos.App.Services.Interfaces
+
+@inject IProductService ProductService
+@inject IUnitOfMeasureService UnitOfMeasureService
+@inject IIGVTypeService IGVTypeService
+@inject ICategoryService CategoryService
+@inject IJSRuntime JSRuntime
+
+<div class="modal fade @(_show ? "show d-block" : "")" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Crear producto</h5>
+                <button type="button" class="btn-close" @onclick="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                @if (_errors.Any())
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error:</strong>
+                        <ul class="mb-0">
+                            @foreach (var error in _errors)
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>
+                        <button type="button" class="btn-close" @onclick="ClearErrors"></button>
+                    </div>
+                }
+
+                <form>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Código</label>
+                            <input type="text" class="form-control" maxlength="20" @bind="_product.Code" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" class="form-control" maxlength="100" @bind="_product.Name" />
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Unidad medida</label>
+                            <select class="form-select" @bind="_product.UnitOfMeasureId">
+                                <option value="@Guid.Empty" disabled>Seleccione</option>
+                                @foreach (var unitOfMeasure in _unitOfMeasure)
+                                {
+                                    <option value="@unitOfMeasure.Id">@unitOfMeasure.Description</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label">Afectación IGV</label>
+                            <select class="form-select" @bind="_product.IGVTypeId">
+                                <option value="@Guid.Empty" disabled>Seleccione</option>
+                                @foreach (var igvType in _igvTypes)
+                                {
+                                    <option value="@igvType.Id">@igvType.Description</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Categoría</label>
+                            <select class="form-select" @bind="_product.CategoryId">
+                                <option value="@Guid.Empty" disabled>Seleccione</option>
+                                @foreach (var category in _categories)
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Descripción</label>
+                        <textarea class="form-control" rows="5" maxlength="200" @bind="_product.Description"></textarea>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Precio de Compra</label>
+                            <input type="number" class="form-control" step="0.01" min="0" @bind="_product.PurchasePrice" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Precio de Venta</label>
+                            <input type="number" class="form-control" step="0.01" min="0" @bind="_product.SalePrice" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @onclick="Close">Cancelar</button>
+                <button type="button" class="btn btn-primary" disabled="@_loading" @onclick="Submit">
+                    @if (_loading)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                    }
+                    Crear producto
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool _show = false;
+    private bool _loading = false;
+    private CreateProductModel _product = new();
+    private List<UnitOfMeasureSelectModel> _unitOfMeasure = new();
+    private List<IGVTypeSelectModel> _igvTypes = new();
+    private List<CategoryListModel> _categories = new();
+    private List<string> _errors = new();
+
+    [Parameter]
+    public EventCallback OnProductCreated { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCatalogs();
+    }
+
+    private async Task LoadCatalogs()
+    {
+        _unitOfMeasure = await UnitOfMeasureService.GetAllUnitOfMeasuresSelectAsync();
+        _igvTypes = await IGVTypeService.GetAllIGVTypesSelectAsync();
+        _categories = await CategoryService.GetAllCategoriesAsync();
+    }
+
+    public void Open()
+    {
+        _show = true;
+        _product = new();
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        _show = false;
+        StateHasChanged();
+    }
+
+    public async Task Submit()
+    {
+        _loading = true;
+
+        try
+        {
+            await ProductService.CreateProductAsync(_product);
+            Close();
+            await OnProductCreated.InvokeAsync();
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+    private void ClearErrors()
+    {
+        _errors.Clear();
+    }
+}

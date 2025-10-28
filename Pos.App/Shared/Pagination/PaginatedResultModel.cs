@@ -5,7 +5,7 @@
         int PageNumber,
         int PageSize,
         int TotalCount,
-        int TotalPage,
+        int TotalPages,
         bool HasPreviousPage,
         bool HasNextPage
         );

@@ -1,4 +1,4 @@
-﻿using Pos.App.Features.Product.Model;
+﻿using Pos.App.Features.Product.Models;
 using Pos.App.Services.Interfaces;
 using Pos.App.Shared.Pagination;
 using System.Net.Http.Json;
@@ -31,6 +31,12 @@ namespace Pos.App.Services.Implementations
                 false,
                 false
                 );
+        }
+
+        public async Task<bool> CreateProductAsync(CreateProductModel createProductModel)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/Product", createProductModel);
+            return response.IsSuccessStatusCode;
         }
     }
 }

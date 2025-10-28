@@ -16,6 +16,9 @@ namespace Pos.App
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7297") });
 
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IUnitOfMeasureService, UnitOfMeasureService>();
+            builder.Services.AddScoped<IIGVTypeService, IGVTypeService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
 
             await builder.Build().RunAsync();
         }

@@ -1,4 +1,4 @@
-﻿namespace Pos.App.Features.Product.Model
+﻿namespace Pos.App.Features.Product.Models
 {
     public record ProductListModel(
         Guid Id,
