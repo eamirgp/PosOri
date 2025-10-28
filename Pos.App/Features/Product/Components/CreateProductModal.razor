@@ -8,7 +8,6 @@
 @inject IUnitOfMeasureService UnitOfMeasureService
 @inject IIGVTypeService IGVTypeService
 @inject ICategoryService CategoryService
-@inject IJSRuntime JSRuntime
 
 <div class="modal fade @(_show ? "show d-block" : "")" style="background-color: rgba(0,0,0,0.5);">
     <div class="modal-dialog modal-lg">
@@ -33,7 +32,7 @@
                     </div>
                 }
 
-                <form>
+                <EditForm>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label">Código</label>
@@ -48,8 +47,7 @@
                         <div class="col-md-3">
                             <label class="form-label">Unidad medida</label>
                             <select class="form-select" @bind="_product.UnitOfMeasureId">
-                                <option value="@Guid.Empty" disabled>Seleccione</option>
-                                @foreach (var unitOfMeasure in _unitOfMeasure)
+                                @foreach (var unitOfMeasure in _unitOfMeasures)
                                 {
                                     <option value="@unitOfMeasure.Id">@unitOfMeasure.Description</option>
                                 }
@@ -58,7 +56,6 @@
                         <div class="col-md-5">
                             <label class="form-label">Afectación IGV</label>
                             <select class="form-select" @bind="_product.IGVTypeId">
-                                <option value="@Guid.Empty" disabled>Seleccione</option>
                                 @foreach (var igvType in _igvTypes)
                                 {
                                     <option value="@igvType.Id">@igvType.Description</option>
@@ -68,7 +65,6 @@
                         <div class="col-md-4">
                             <label class="form-label">Categoría</label>
                             <select class="form-select" @bind="_product.CategoryId">
-                                <option value="@Guid.Empty" disabled>Seleccione</option>
                                 @foreach (var category in _categories)
                                 {
                                     <option value="@category.Id">@category.Name</option>
@@ -90,7 +86,7 @@
                             <input type="number" class="form-control" step="0.01" min="0" @bind="_product.SalePrice" />
                         </div>
                     </div>
-                </form>
+                </EditForm>
             </div>
 
             <div class="modal-footer">
@@ -111,7 +107,7 @@
     private bool _show = false;
     private bool _loading = false;
     private CreateProductModel _product = new();
-    private List<UnitOfMeasureSelectModel> _unitOfMeasure = new();
+    private List<UnitOfMeasureSelectModel> _unitOfMeasures = new();
     private List<IGVTypeSelectModel> _igvTypes = new();
     private List<CategoryListModel> _categories = new();
     private List<string> _errors = new();
@@ -126,7 +122,7 @@
 
     private async Task LoadCatalogs()
     {
-        _unitOfMeasure = await UnitOfMeasureService.GetAllUnitOfMeasuresSelectAsync();
+        _unitOfMeasures = await UnitOfMeasureService.GetAllUnitOfMeasuresSelectAsync();
         _igvTypes = await IGVTypeService.GetAllIGVTypesSelectAsync();
         _categories = await CategoryService.GetAllCategoriesAsync();
     }
@@ -135,12 +131,15 @@
     {
         _show = true;
         _product = new();
+        _errors.Clear();
+        SetDefaultValues();
         StateHasChanged();
     }
 
     public void Close()
     {
         _show = false;
+        _errors.Clear();
         StateHasChanged();
     }
 
@@ -150,17 +149,39 @@
 
         try
         {
-            await ProductService.CreateProductAsync(_product);
-            Close();
-            await OnProductCreated.InvokeAsync();
+            var response = await ProductService.CreateProductAsync(_product);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Close();
+                await OnProductCreated.InvokeAsync();
+            }
+            else
+            {
+                var errorResponse = await response.Content.ReadFromJsonAsync<Dictionary<string, List<string>>>();
+                _errors = errorResponse?["errors"] ?? new List<string> { "Error desconocido al crear producto." };
+            }
         }
         finally
         {
             _loading = false;
         }
     }
+
     private void ClearErrors()
     {
         _errors.Clear();
+    }
+
+    private void SetDefaultValues()
+    {
+        var unitDefault = _unitOfMeasures.FirstOrDefault(um => um.Description == "Unidad");
+        _product.UnitOfMeasureId = unitDefault?.Id ?? Guid.Empty;
+
+        var igvDefault = _igvTypes.FirstOrDefault(it => it.Description == "Gravado - Operación onerosa");
+        _product.IGVTypeId = igvDefault?.Id ?? Guid.Empty;
+
+        var categoryDefault = _categories.FirstOrDefault(c => c.Name == "Otros");
+        _product.CategoryId = categoryDefault?.Id ?? Guid.Empty;
     }
 }

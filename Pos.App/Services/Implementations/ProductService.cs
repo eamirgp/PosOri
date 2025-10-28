@@ -33,10 +33,9 @@ namespace Pos.App.Services.Implementations
                 );
         }
 
-        public async Task<bool> CreateProductAsync(CreateProductModel createProductModel)
+        public async Task<HttpResponseMessage> CreateProductAsync(CreateProductModel createProductModel)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/Product", createProductModel);
-            return response.IsSuccessStatusCode;
+            return await _httpClient.PostAsJsonAsync("api/Product", createProductModel);
         }
     }
 }

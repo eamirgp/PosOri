@@ -6,6 +6,6 @@ namespace Pos.App.Services.Interfaces
     public interface IProductService
     {
         Task<PaginatedResultModel<ProductListModel>> GetAllProductsAsync(int pageNumber, int pageSize, string? searchTerm);
-        Task<bool> CreateProductAsync(CreateProductModel createProductModel);
+        Task<HttpResponseMessage> CreateProductAsync(CreateProductModel createProductModel);
     }
 }
