@@ -11,6 +11,20 @@
             </div>
 
             <div class="modal-body">
+                @if (_errors.Any())
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error:</strong>
+                        <ul class="mb-0">
+                            @foreach (var error in _errors)
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>
+                        <button type="button" class="btn-close" @onclick="ClearErrors"></button>
+                    </div>
+                }
+
                 <form>
                     <div class="row mb-3">
                         <div class="col-md-6">
@@ -91,6 +105,7 @@
     private List<UnitOfMeasureDto> _unitOfMeasure = new();
     private List<IGVTypeDto> _igvTypes = new();
     private List<CategoryDto> _categories = new();
+    private List<string> _errors = new();
 
     [Parameter]
     public EventCallback OnProductCreated { get; set; }
@@ -130,9 +145,17 @@
             Close();
             await OnProductCreated.InvokeAsync();
         }
+        catch (ApiException<ErrorResponse> ex)
+        {
+            _errors = ex.Result.Errors.ToList();
+        }
         finally
         {
             _loading = false;
         }
+    }
+    private void ClearErrors()
+    {
+        _errors.Clear();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Pos.Api.Models;
 using Pos.Application.Features.Product.Commands.CreateProduct;
 using Pos.Application.Features.Product.Commands.UpdateProduct;
 using Pos.Application.Features.Product.Queries.GetAllProducts;
@@ -20,13 +21,15 @@ namespace Pos.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
         public async Task<ActionResult> CreateAsync([FromBody]CreateProductRequest createProductRequest)
         {
             var response = await _sender.Send(createProductRequest);
             return response.IsSuccess
                 ? Created(string.Empty, new { productId = response.Value })
-                : StatusCode(response.StatusCode, new { errors = response.Errors });
+                : StatusCode(response.StatusCode, new ErrorResponse { Errors = response.Errors });
         }
 
         [HttpPut("{id}")]
