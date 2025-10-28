@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Pos.App.Service;
+using Pos.App.Services.Implementations;
+using Pos.App.Services.Interfaces;
 
 namespace Pos.App
 {
@@ -12,7 +13,9 @@ namespace Pos.App
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
-            builder.Services.AddScoped(sp => new PosApiClient("https://localhost:7297/", new HttpClient()));
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7297") });
+
+            builder.Services.AddScoped<IProductService, ProductService>();
 
             await builder.Build().RunAsync();
         }

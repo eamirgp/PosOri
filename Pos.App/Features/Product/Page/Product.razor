@@ -1,15 +1,17 @@
 ﻿@page "/product"
 
 @using Pos.App.Features.Product.Components
-@using Pos.App.Service
+@using Pos.App.Features.Product.Model
+@using Pos.App.Services.Interfaces
+@using Pos.App.Shared.Pagination
 
-@inject PosApiClient PosApi
+@inject IProductService ProductService
 
 @implements IDisposable
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-2">
-        <button class="btn btn-primary" @onclick="OpenCreateModal">
+        <button class="btn btn-primary">
             <i class="bi bi-plus"></i>
             Crear producto
         </button>
@@ -40,7 +42,7 @@
                             <td>@product.Code</td>
                             <td>@product.Name</td>
                             <td>@product.UnitOfMeasure</td>
-                            <td>@product.IgvType</td>
+                            <td>@product.IGVType</td>
                             <td>@product.Category</td>
                             <td>@product.PurchasePrice</td>
                             <td>@product.SalePrice</td>
@@ -98,27 +100,24 @@
                     </li>
 
                     <li class="page-item @(!_products.HasNextPage ? "disabled" : "")">
-                        <a class="page-link" href="#" @onclick="() => GoToPage(_products.TotalPages)" aria-label="Next">
+                        <a class="page-link" href="#" @onclick="() => GoToPage(_products.TotalPage)" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
                 </ul>
             </nav>
 
-            <p class="text-center">Página @_products.PageNumber de @_products.TotalPages</p>
+            <p class="text-center">Página @_products.PageNumber de @_products.TotalPage</p>
         </div>
     </div>
 </div>
 
-<CreateProductModal @ref="_createModal" OnProductCreated="OnProductCreated" />
-
 @code {
-    private ProductDtoPaginatedResult _products = new();
+    private PaginatedResultModel<ProductListModel> _products;
     private int _pageNumber = 1;
     private int _pageSize = 20;
     private string? _searchTerm;
     private Timer? _debounceTimer;
-    private CreateProductModal _createModal = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -127,7 +126,7 @@
 
     private async Task LoadProducts()
     {
-        _products = await PosApi.ProductGETAsync(_pageNumber, _pageSize , _searchTerm);
+        _products = await ProductService.GetAllProductsAsync(_pageNumber, _pageSize, _searchTerm);
     }
 
     private void OnSearchChanged(ChangeEventArgs e)
@@ -174,10 +173,7 @@
         _pageNumber = 1;
         await LoadProducts();
     }
-    private void OpenCreateModal()
-    {
-        _createModal.Open();
-    }
+ 
     private async Task OnProductCreated()
     {
         _pageNumber = 1;

@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Pos.Api.Models;
 using Pos.Application.Features.Product.Commands.CreateProduct;
 using Pos.Application.Features.Product.Commands.UpdateProduct;
 using Pos.Application.Features.Product.Queries.GetAllProducts;
@@ -20,20 +19,15 @@ namespace Pos.Api.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
         public async Task<ActionResult> CreateAsync([FromBody]CreateProductRequest createProductRequest)
         {
             var response = await _sender.Send(createProductRequest);
             return response.IsSuccess
                 ? Created(string.Empty, new { productId = response.Value })
-                : StatusCode(response.StatusCode, new ErrorResponse { Errors = response.Errors });
+                : StatusCode(response.StatusCode, new { errors = response.Errors });
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult> UpdateAsync(Guid id, [FromBody]UpdateProductRequest updateProductRequest)
         {
             var newRequest = updateProductRequest with { Id = id };
@@ -44,7 +38,6 @@ namespace Pos.Api.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedResult<ProductDto>>> GetAllAsync([FromQuery]PaginationParams param)
         {
             var response = await _sender.Send(new GetAllProductsRequest(param));
