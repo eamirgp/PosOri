@@ -1,0 +1,252 @@
+@using Microsoft.AspNetCore.Components.Routing
+
+<div class="sidebar bg-white border-end shadow-sm">
+    <div class="sidebar-header border-bottom p-3">
+        <div class="d-flex align-items-center">
+            <div class="sidebar-brand">
+                <i class="bi bi-shop text-primary fs-3 me-2"></i>
+                <span class="fw-bold fs-5">POS System</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar-body">
+        <nav class="nav flex-column p-2">
+            <!-- Dashboard -->
+            <div class="nav-section-title px-3 py-2 text-muted small fw-semibold text-uppercase">
+                Principal
+            </div>
+            
+            <NavLink class="nav-link sidebar-link" href="/" Match="NavLinkMatch.All">
+                <i class="bi bi-house-door"></i>
+                <span>Dashboard</span>
+            </NavLink>
+
+            <!-- Ventas -->
+            <div class="nav-section-title px-3 py-2 text-muted small fw-semibold text-uppercase mt-3">
+                Ventas
+            </div>
+            
+            <NavLink class="nav-link sidebar-link" href="/sale">
+                <i class="bi bi-cart-check"></i>
+                <span>Nueva Venta</span>
+            </NavLink>
+
+            <NavLink class="nav-link sidebar-link" href="/sales">
+                <i class="bi bi-receipt"></i>
+                <span>Ventas</span>
+            </NavLink>
+
+            <!-- Compras -->
+            <div class="nav-section-title px-3 py-2 text-muted small fw-semibold text-uppercase mt-3">
+                Compras
+            </div>
+            
+            <NavLink class="nav-link sidebar-link" href="/purchase">
+                <i class="bi bi-bag-plus"></i>
+                <span>Nueva Compra</span>
+            </NavLink>
+
+            <NavLink class="nav-link sidebar-link" href="/purchases">
+                <i class="bi bi-clipboard-data"></i>
+                <span>Compras</span>
+            </NavLink>
+
+            <!-- Inventario -->
+            <div class="nav-section-title px-3 py-2 text-muted small fw-semibold text-uppercase mt-3">
+                Inventario
+            </div>
+            
+            <NavLink class="nav-link sidebar-link" href="/product">
+                <i class="bi bi-box-seam"></i>
+                <span>Productos</span>
+            </NavLink>
+
+            <NavLink class="nav-link sidebar-link" href="/category">
+                <i class="bi bi-folder"></i>
+                <span>Categorías</span>
+            </NavLink>
+
+            <NavLink class="nav-link sidebar-link" href="/warehouse">
+                <i class="bi bi-building"></i>
+                <span>Almacenes</span>
+            </NavLink>
+
+            <NavLink class="nav-link sidebar-link" href="/inventory">
+                <i class="bi bi-boxes"></i>
+                <span>Inventario</span>
+            </NavLink>
+
+            <!-- Personas -->
+            <div class="nav-section-title px-3 py-2 text-muted small fw-semibold text-uppercase mt-3">
+                Personas
+            </div>
+            
+            <NavLink class="nav-link sidebar-link" href="/person">
+                <i class="bi bi-people"></i>
+                <span>Clientes/Proveedores</span>
+            </NavLink>
+
+            <!-- Configuración -->
+            <div class="nav-section-title px-3 py-2 text-muted small fw-semibold text-uppercase mt-3">
+                Configuración
+            </div>
+            
+            <NavLink class="nav-link sidebar-link" href="/settings">
+                <i class="bi bi-gear"></i>
+                <span>Configuración</span>
+            </NavLink>
+        </nav>
+    </div>
+
+    <div class="sidebar-footer border-top p-3">
+        <div class="d-flex align-items-center">
+            <div class="avatar-circle bg-primary text-white me-2">
+                <i class="bi bi-person-fill"></i>
+            </div>
+            <div class="flex-grow-1 sidebar-user-info">
+                <div class="fw-semibold small">Usuario Admin</div>
+                <div class="text-muted" style="font-size: 0.75rem;">admin@pos.com</div>
+            </div>
+            <button class="btn btn-sm btn-link text-muted p-0" title="Cerrar sesión">
+                <i class="bi bi-box-arrow-right fs-5"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 260px;
+        display: flex;
+        flex-direction: column;
+        z-index: 1000;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar-header {
+        flex-shrink: 0;
+    }
+
+    .sidebar-brand {
+        display: flex;
+        align-items: center;
+        font-size: 1.1rem;
+    }
+
+    .sidebar-body {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .sidebar-body::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .sidebar-body::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .sidebar-body::-webkit-scrollbar-thumb {
+        background: #dee2e6;
+        border-radius: 3px;
+    }
+
+    .sidebar-body::-webkit-scrollbar-thumb:hover {
+        background: #adb5bd;
+    }
+
+    .sidebar-footer {
+        flex-shrink: 0;
+        background-color: #f8f9fa;
+    }
+
+    .nav-section-title {
+        letter-spacing: 0.5px;
+    }
+
+    .sidebar-link {
+        display: flex;
+        align-items: center;
+        padding: 0.65rem 1rem;
+        margin: 0.15rem 0;
+        border-radius: 0.375rem;
+        color: #495057;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        position: relative;
+    }
+
+    .sidebar-link i {
+        font-size: 1.1rem;
+        width: 24px;
+        margin-right: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sidebar-link span {
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .sidebar-link:hover {
+        background-color: #f8f9fa;
+        color: #0d6efd;
+        text-decoration: none;
+    }
+
+    .sidebar-link.active {
+        background-color: #e7f1ff;
+        color: #0d6efd;
+        font-weight: 600;
+    }
+
+    .sidebar-link.active::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background-color: #0d6efd;
+        border-radius: 0 3px 3px 0;
+    }
+
+    .avatar-circle {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    .sidebar-user-info {
+        min-width: 0;
+    }
+
+    .sidebar-user-info div {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .sidebar {
+            transform: translateX(-100%);
+        }
+
+        .sidebar.show {
+            transform: translateX(0);
+        }
+    }
+</style>

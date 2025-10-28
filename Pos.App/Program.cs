@@ -19,6 +19,7 @@ namespace Pos.App
             builder.Services.AddScoped<IUnitOfMeasureService, UnitOfMeasureService>();
             builder.Services.AddScoped<IIGVTypeService, IGVTypeService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<IToastService, ToastService>();
 
             await builder.Build().RunAsync();
         }

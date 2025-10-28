@@ -1,0 +1,209 @@
+@page "/"
+
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="mb-1">
+                <i class="bi bi-speedometer2 text-primary me-2"></i>
+                Dashboard
+            </h2>
+            <p class="text-muted mb-0">Resumen general del sistema</p>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="text-muted mb-1 small">Ventas del Día</p>
+                            <h3 class="mb-0 fw-bold">S/ 2,450.00</h3>
+                            <small class="text-success">
+                                <i class="bi bi-arrow-up"></i> 12.5% vs ayer
+                            </small>
+                        </div>
+                        <div class="bg-primary bg-opacity-10 rounded p-3">
+                            <i class="bi bi-cart-check fs-3 text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="text-muted mb-1 small">Productos</p>
+                            <h3 class="mb-0 fw-bold">245</h3>
+                            <small class="text-info">
+                                <i class="bi bi-box-seam"></i> En inventario
+                            </small>
+                        </div>
+                        <div class="bg-info bg-opacity-10 rounded p-3">
+                            <i class="bi bi-box-seam fs-3 text-info"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="text-muted mb-1 small">Clientes</p>
+                            <h3 class="mb-0 fw-bold">89</h3>
+                            <small class="text-warning">
+                                <i class="bi bi-person-add"></i> 5 nuevos
+                            </small>
+                        </div>
+                        <div class="bg-warning bg-opacity-10 rounded p-3">
+                            <i class="bi bi-people fs-3 text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="text-muted mb-1 small">Órdenes Pendientes</p>
+                            <h3 class="mb-0 fw-bold">12</h3>
+                            <small class="text-danger">
+                                <i class="bi bi-clock"></i> Por procesar
+                            </small>
+                        </div>
+                        <div class="bg-danger bg-opacity-10 rounded p-3">
+                            <i class="bi bi-clipboard-check fs-3 text-danger"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row">
+        <div class="col-md-8 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">
+                        <i class="bi bi-activity me-2"></i>
+                        Actividad Reciente
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center py-3 border-bottom">
+                        <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                            <i class="bi bi-cart-check text-success"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold">Nueva venta registrada</div>
+                            <small class="text-muted">Venta #1234 - S/ 450.00</small>
+                        </div>
+                        <small class="text-muted">Hace 5 min</small>
+                    </div>
+
+                    <div class="d-flex align-items-center py-3 border-bottom">
+                        <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                            <i class="bi bi-box-seam text-primary"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold">Producto agregado</div>
+                            <small class="text-muted">Laptop Dell XPS 15</small>
+                        </div>
+                        <small class="text-muted">Hace 15 min</small>
+                    </div>
+
+                    <div class="d-flex align-items-center py-3 border-bottom">
+                        <div class="bg-warning bg-opacity-10 rounded-circle p-2 me-3">
+                            <i class="bi bi-person-add text-warning"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold">Nuevo cliente registrado</div>
+                            <small class="text-muted">Juan Pérez - DNI 12345678</small>
+                        </div>
+                        <small class="text-muted">Hace 1 hora</small>
+                    </div>
+
+                    <div class="d-flex align-items-center py-3">
+                        <div class="bg-info bg-opacity-10 rounded-circle p-2 me-3">
+                            <i class="bi bi-bag-plus text-info"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold">Compra registrada</div>
+                            <small class="text-muted">Compra #5678 - S/ 1,200.00</small>
+                        </div>
+                        <small class="text-muted">Hace 2 horas</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Alertas
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
+                        <i class="bi bi-box-seam me-2"></i>
+                        <div class="small">
+                            <strong>5 productos</strong> con stock bajo
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info d-flex align-items-center mb-3" role="alert">
+                        <i class="bi bi-clock me-2"></i>
+                        <div class="small">
+                            <strong>12 órdenes</strong> pendientes de procesar
+                        </div>
+                    </div>
+
+                    <div class="alert alert-danger d-flex align-items-center mb-0" role="alert">
+                        <i class="bi bi-exclamation-circle me-2"></i>
+                        <div class="small">
+                            <strong>3 productos</strong> sin stock
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mt-3">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">
+                        <i class="bi bi-graph-up me-2"></i>
+                        Acceso Rápido
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="/sale" class="btn btn-outline-primary">
+                            <i class="bi bi-cart-plus me-2"></i>
+                            Nueva Venta
+                        </a>
+                        <a href="/product" class="btn btn-outline-info">
+                            <i class="bi bi-box-seam me-2"></i>
+                            Ver Productos
+                        </a>
+                        <a href="/person" class="btn btn-outline-warning">
+                            <i class="bi bi-people me-2"></i>
+                            Gestionar Clientes
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
