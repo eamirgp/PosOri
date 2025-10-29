@@ -6,6 +6,7 @@ namespace Pos.Application.Features.Product.Commands.UpdateProduct
     public record UpdateProductRequest(
         Guid Id,
         Guid UnitOfMeasureId,
+        Guid IGVTypeId,
         Guid CategoryId,
         string Code,
         string Name,

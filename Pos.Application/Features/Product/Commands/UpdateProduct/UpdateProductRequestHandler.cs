@@ -8,18 +8,21 @@ namespace Pos.Application.Features.Product.Commands.UpdateProduct
     {
         private readonly IProductRepository _productRepository;
         private readonly IUnitOfMeasureRepository _unitOfMeasureRepository;
+        private readonly IIGVTypeRepository _igvTypeRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public UpdateProductRequestHandler(
             IProductRepository productRepository,
             IUnitOfMeasureRepository unitOfMeasureRepository,
+            IIGVTypeRepository igvTypeRepository,
             ICategoryRepository categoryRepository,
             IUnitOfWork unitOfWork
             )
         {
             _productRepository = productRepository;
             _unitOfMeasureRepository = unitOfMeasureRepository;
+            _igvTypeRepository = igvTypeRepository;
             _categoryRepository = categoryRepository;
             _unitOfWork = unitOfWork;
         }
@@ -34,6 +37,10 @@ namespace Pos.Application.Features.Product.Commands.UpdateProduct
             if (unitOfMeasure is null)
                 return Result<Unit>.Failure(new List<string> { $"La unidad de medida con ID '{request.UnitOfMeasureId}' no existe" }, 404);
 
+            var igvType = await _igvTypeRepository.GetByIdAsync(request.IGVTypeId);
+            if (igvType is null)
+                return Result<Unit>.Failure(new List<string> { $"El tipo de IGV con ID '{request.Id}' no existe." }, 404);
+
             var category = await _categoryRepository.GetByIdAsync(request.CategoryId);
             if (category is null)
                 return Result<Unit>.Failure(new List<string> { $"La categoría con ID '{request.CategoryId}' no existe." }, 404);
@@ -42,6 +49,7 @@ namespace Pos.Application.Features.Product.Commands.UpdateProduct
                 return Result<Unit>.Failure(new List<string> { $"El código '{request.Code}' ya existe." }, 409);
 
             product.UpdateUnitOfMeasure(unitOfMeasure.Id);
+            product.UpdateIGVType(igvType.Id);
             product.UpdateCategory(category.Id);
             product.UpdateCode(request.Code);
             product.UpdateName(request.Name);

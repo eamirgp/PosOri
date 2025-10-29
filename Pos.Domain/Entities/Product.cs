@@ -44,6 +44,11 @@ namespace Pos.Domain.Entities
             UnitOfMeasureId = unitOfMeasureId;
         }
 
+        public void UpdateIGVType(Guid igvTypeId)
+        {
+            IGVTypeId = igvTypeId;
+        }
+
         public void UpdateCategory(Guid categoryId)
         {
             CategoryId = categoryId;
