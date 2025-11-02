@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Pos.Application.Features.Product.Commands.CreateProduct;
 using Pos.Application.Features.Product.Commands.UpdateProduct;
 using Pos.Application.Features.Product.Queries.GetAllProducts;
+using Pos.Application.Features.Product.Queries.SearchProducts;
 using Pos.Application.Shared.Pagination;
 
 namespace Pos.Api.Controllers
@@ -19,7 +20,7 @@ namespace Pos.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateAsync([FromBody]CreateProductRequest createProductRequest)
+        public async Task<IActionResult> CreateAsync([FromBody]CreateProductRequest createProductRequest)
         {
             var response = await _sender.Send(createProductRequest);
             return response.IsSuccess
@@ -28,7 +29,7 @@ namespace Pos.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateAsync(Guid id, [FromBody]UpdateProductRequest updateProductRequest)
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody]UpdateProductRequest updateProductRequest)
         {
             var newRequest = updateProductRequest with { Id = id };
             var response = await _sender.Send(newRequest);
@@ -38,9 +39,16 @@ namespace Pos.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PaginatedResult<ProductDto>>> GetAllAsync([FromQuery]PaginationParams param)
+        public async Task<IActionResult> GetAllAsync([FromQuery]PaginationParams param)
         {
             var response = await _sender.Send(new GetAllProductsRequest(param));
+            return Ok(response);
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchAsync([FromQuery]string searchTerm, [FromQuery]Guid warehouseId)
+        {
+            var response = await _sender.Send(new SearchProductsRequest(searchTerm, warehouseId));
             return Ok(response);
         }
     }

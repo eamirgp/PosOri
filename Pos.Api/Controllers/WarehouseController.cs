@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Pos.Application.Features.Warehouse.Commands.CreateWarehouse;
 using Pos.Application.Features.Warehouse.Commands.UpdateWarehouse;
+using Pos.Application.Features.Warehouse.Queries.GetAllWarehouses;
 
 namespace Pos.Api.Controllers
 {
@@ -29,6 +30,13 @@ namespace Pos.Api.Controllers
             var newRequest = updateWarehouseRequest with { Id = id };
             var response = await _sender.Send(newRequest);
             return NoContent();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            var response = await _sender.Send(new GetAllWarehousesRequest());
+            return Ok(response);
         }
     }
 }

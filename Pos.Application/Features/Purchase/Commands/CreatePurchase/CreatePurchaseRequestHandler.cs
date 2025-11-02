@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Pos.Application.Contracts.Persistence;
 using Pos.Application.Shared.Result;
-using Pos.Domain.Entities;
 using Pos.Domain.Inputs;
 
 namespace Pos.Application.Features.Purchase.Commands.CreatePurchase
@@ -107,7 +106,7 @@ namespace Pos.Application.Features.Purchase.Commands.CreatePurchase
             var inventories = await _inventoryRepository.GetByProductsAndWarehouse(productIds, warehouse.Id);
             var inventoriesDictionary = inventories.ToDictionary(i => i.ProductId);
 
-            var newInventories = new List<Inventory>();
+            var newInventories = new List<Domain.Entities.Inventory>();
 
             foreach (var detail in request.Details)
             {
@@ -117,7 +116,7 @@ namespace Pos.Application.Features.Purchase.Commands.CreatePurchase
                 }
                 else
                 {
-                    var newInventory = Inventory.Create(
+                    var newInventory = Domain.Entities.Inventory.Create(
                         detail.ProductId,
                         warehouse.Id,
                         detail.Quantity
