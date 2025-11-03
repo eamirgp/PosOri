@@ -3,7 +3,7 @@ using Pos.Application.Contracts.Queries;
 
 namespace Pos.Application.Features.Category.Queries.GetAllCategories
 {
-    public record GetAllCategoriesRequestHandler : IRequestHandler<GetAllCategoriesRequest, List<CategoryDto>>
+    public class GetAllCategoriesRequestHandler : IRequestHandler<GetAllCategoriesRequest, List<CategoryDto>>
     {
         private readonly ICategoryQueryRepository _categoryQueryRepository;
 

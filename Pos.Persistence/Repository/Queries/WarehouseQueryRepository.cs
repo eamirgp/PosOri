@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Pos.Application.Contracts.Queries;
 using Pos.Application.Features.Warehouse.Queries.GetAllWarehouses;
+using Pos.Application.Features.Warehouse.Queries.GetAllWarehousesSelect;
 
 namespace Pos.Persistence.Repository.Queries
 {
@@ -25,9 +26,26 @@ namespace Pos.Persistence.Repository.Queries
                             Id,
                             Name,
                             Address
-                        FROM Warehouses";
+                        FROM Warehouses
+                        ORDER BY Name ASC";
 
             var warehouses = await connection.QueryAsync<WarehouseDto>(query);
+
+            return warehouses.ToList();
+        }
+
+        public async Task<List<WarehouseSelectDto>> GetAllWarehousesSelectAsync()
+        {
+            using var connection = new SqlConnection(_connectionString);
+
+            var query = @"
+                        SELECT
+                            Id,
+                            Name
+                        FROM Warehouses
+                        ORDER BY Name ASC";
+
+            var warehouses = await connection.QueryAsync<WarehouseSelectDto>(query);
 
             return warehouses.ToList();
         }

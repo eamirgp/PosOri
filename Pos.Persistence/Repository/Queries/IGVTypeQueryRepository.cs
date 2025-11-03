@@ -18,7 +18,7 @@ namespace Pos.Persistence.Repository.Queries
 
         public async Task<List<IGVTypeDto>> GetAllIGVTypesAsync()
         {
-            var connection = new SqlConnection(_connetionString);
+            using var connection = new SqlConnection(_connetionString);
 
             var query = @"
                         SELECT

@@ -18,7 +18,7 @@ namespace Pos.Persistence.Repository.Queries
 
         public async Task<List<UnitOfMeasureDto>> GetAllUnitOfMeasuresAsync()
         {
-            var connection = new SqlConnection(_connectionString);
+            using var connection = new SqlConnection(_connectionString);
 
             var query = @"
                         SELECT

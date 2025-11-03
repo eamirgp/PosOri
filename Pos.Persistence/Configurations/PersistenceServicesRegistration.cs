@@ -26,6 +26,7 @@ namespace Pos.Persistence.Configurations
             services.AddScoped<IInventoryRepository, InventoryRepository>();
             services.AddScoped<IInventoryQueryRepository, InventoryQueryRepository>();
             services.AddScoped<IPersonRepository, PersonRepository>();
+            services.AddScoped<IPersonQueryRepository, PersonQueryRepository>();
             services.AddScoped<IDocumentTypeRepository, DocumentTypeRepository>();
             services.AddScoped<IPurchaseRepository, PurchaseRepository>();
             services.AddScoped<ISaleRepository, SaleRepository>();

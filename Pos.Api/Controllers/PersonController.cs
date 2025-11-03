@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Pos.Application.Features.Person.Commands.CreatePerson;
 using Pos.Application.Features.Person.Commands.UpdatePerson;
+using Pos.Application.Features.Person.Queries.GetAllPersons;
+using Pos.Application.Shared.Pagination;
 
 namespace Pos.Api.Controllers
 {
@@ -29,6 +31,13 @@ namespace Pos.Api.Controllers
             var newRequest = updatePersonRequest with { Id = id };
             var response = await _sender.Send(newRequest);
             return NoContent();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync([FromQuery]PaginationParams param)
+        {
+            var response = await _sender.Send(new GetAllPersonsRequest(param));
+            return Ok(response);
         }
     }
 }

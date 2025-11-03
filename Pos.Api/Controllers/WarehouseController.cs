@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Pos.Application.Features.Warehouse.Commands.CreateWarehouse;
 using Pos.Application.Features.Warehouse.Commands.UpdateWarehouse;
 using Pos.Application.Features.Warehouse.Queries.GetAllWarehouses;
+using Pos.Application.Features.Warehouse.Queries.GetAllWarehousesSelect;
 
 namespace Pos.Api.Controllers
 {
@@ -36,6 +37,13 @@ namespace Pos.Api.Controllers
         public async Task<IActionResult> GetAllAsync()
         {
             var response = await _sender.Send(new GetAllWarehousesRequest());
+            return Ok(response);
+        }
+
+        [HttpGet("select")]
+        public async Task<IActionResult> GetAllSelectAsync()
+        {
+            var response = await _sender.Send(new GetAllWarehousesSelectRequest());
             return Ok(response);
         }
     }
