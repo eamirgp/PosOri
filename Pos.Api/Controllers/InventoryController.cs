@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Pos.Application.Features.Inventory.Queries.GetAllInventory;
+using Pos.Application.Features.Inventory.Queries.GetAllInventories;
 using Pos.Application.Shared.Pagination;
 
 namespace Pos.Api.Controllers
@@ -19,7 +19,7 @@ namespace Pos.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAsync([FromQuery]PaginationParams param, [FromQuery]Guid warehouseId)
         {
-            var response = await _sender.Send(new GetAllInventoryRequest(param, warehouseId));
+            var response = await _sender.Send(new GetAllInventoriesRequest(param, warehouseId));
             return Ok(response);
         }
     }

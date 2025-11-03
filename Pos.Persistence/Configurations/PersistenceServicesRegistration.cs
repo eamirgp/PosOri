@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Pos.Application.Contracts.Persistence;
-using Pos.Application.Contracts.Queries;
+using Pos.Application.Contracts.Persistence.Queries;
 using Pos.Persistence.Context;
 using Pos.Persistence.Repository;
 using Pos.Persistence.Repository.Queries;
@@ -28,9 +28,11 @@ namespace Pos.Persistence.Configurations
             services.AddScoped<IPersonRepository, PersonRepository>();
             services.AddScoped<IPersonQueryRepository, PersonQueryRepository>();
             services.AddScoped<IDocumentTypeRepository, DocumentTypeRepository>();
+            services.AddScoped<IDocumentTypeQueryRepository, DocumentTypeQueryRepository>();
             services.AddScoped<IPurchaseRepository, PurchaseRepository>();
             services.AddScoped<ISaleRepository, SaleRepository>();
             services.AddScoped<IVoucherTypeRepository, VoucherTypeRepository>();
+            services.AddScoped<IVoucherTypeQueryRepository, VoucherTypeQueryRepository>();
             services.AddScoped<IVoucherSerieRepository, VoucherSerieRepository>();
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
             services.AddScoped<IUnitOfMeasureRepository, UnitOfMeasureRepository>();

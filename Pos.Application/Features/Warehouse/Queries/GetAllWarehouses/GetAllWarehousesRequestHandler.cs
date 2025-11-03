@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Pos.Application.Contracts.Queries;
+using Pos.Application.Contracts.Persistence.Queries;
 
 namespace Pos.Application.Features.Warehouse.Queries.GetAllWarehouses
 {

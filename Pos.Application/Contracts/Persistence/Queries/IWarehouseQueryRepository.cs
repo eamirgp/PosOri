@@ -1,7 +1,7 @@
 ﻿using Pos.Application.Features.Warehouse.Queries.GetAllWarehouses;
 using Pos.Application.Features.Warehouse.Queries.GetAllWarehousesSelect;
 
-namespace Pos.Application.Contracts.Queries
+namespace Pos.Application.Contracts.Persistence.Queries
 {
     public interface IWarehouseQueryRepository
     {

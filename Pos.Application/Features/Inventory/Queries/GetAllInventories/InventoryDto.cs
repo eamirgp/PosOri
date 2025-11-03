@@ -1,4 +1,4 @@
-﻿namespace Pos.Application.Features.Inventory.Queries.GetAllInventory
+﻿namespace Pos.Application.Features.Inventory.Queries.GetAllInventories
 {
     public record InventoryDto(
         Guid Id,

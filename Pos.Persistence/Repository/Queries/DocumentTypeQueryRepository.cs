@@ -2,21 +2,21 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Pos.Application.Contracts.Persistence.Queries;
-using Pos.Application.Features.UnitOfMeasure.Queries.GetAllUnitOfMeasures;
+using Pos.Application.Features.DocumentType.Queries.GetAllDocumentTypesSelect;
 
 namespace Pos.Persistence.Repository.Queries
 {
-    public class UnitOfMeasureQueryRepository : IUnitOfMeasureQueryRepository
+    public class DocumentTypeQueryRepository : IDocumentTypeQueryRepository
     {
         private readonly string _connectionString;
 
-        public UnitOfMeasureQueryRepository(IConfiguration configuration)
+        public DocumentTypeQueryRepository(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("DB")
                 ?? throw new InvalidOperationException("");
         }
 
-        public async Task<List<UnitOfMeasureDto>> GetAllUnitOfMeasuresAsync()
+        public async Task<List<DocumentTypeSelectDto>> GetAllDocumentTypesSelectAsync()
         {
             using var connection = new SqlConnection(_connectionString);
 
@@ -24,12 +24,11 @@ namespace Pos.Persistence.Repository.Queries
                         SELECT
                             Id,
                             Description
-                        FROM UnitOfMeasures
-                        ORDER BY Description ASC";
+                        FROM DocumentTypes";
 
-            var unitOfMeasure = await connection.QueryAsync<UnitOfMeasureDto>(query);
+            var documentTypes = await connection.QueryAsync<DocumentTypeSelectDto>(query);
 
-            return unitOfMeasure.ToList();
+            return documentTypes.ToList();
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Pos.Application.Contracts.Queries;
+using Pos.Application.Contracts.Persistence.Queries;
 using Pos.Application.Shared.Pagination;
 
 namespace Pos.Application.Features.Product.Queries.GetAllProducts

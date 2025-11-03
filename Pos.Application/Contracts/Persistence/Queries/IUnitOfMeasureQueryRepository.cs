@@ -1,6 +1,6 @@
 ﻿using Pos.Application.Features.UnitOfMeasure.Queries.GetAllUnitOfMeasures;
 
-namespace Pos.Application.Contracts.Queries
+namespace Pos.Application.Contracts.Persistence.Queries
 {
     public interface IUnitOfMeasureQueryRepository
     {

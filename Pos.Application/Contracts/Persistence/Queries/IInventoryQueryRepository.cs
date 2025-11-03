@@ -1,7 +1,7 @@
-﻿using Pos.Application.Features.Inventory.Queries.GetAllInventory;
+﻿using Pos.Application.Features.Inventory.Queries.GetAllInventories;
 using Pos.Application.Shared.Pagination;
 
-namespace Pos.Application.Contracts.Queries
+namespace Pos.Application.Contracts.Persistence.Queries
 {
     public interface IInventoryQueryRepository
     {

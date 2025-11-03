@@ -2,7 +2,7 @@
 using Pos.Application.Features.Product.Queries.SearchProducts;
 using Pos.Application.Shared.Pagination;
 
-namespace Pos.Application.Contracts.Queries
+namespace Pos.Application.Contracts.Persistence.Queries
 {
     public interface IProductQueryRepository
     {

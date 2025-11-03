@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using Pos.Application.Contracts.Queries;
+using Pos.Application.Contracts.Persistence.Queries;
 using Pos.Application.Features.IGVType.Queries.GetAllIGVTypes;
 
 namespace Pos.Persistence.Repository.Queries
