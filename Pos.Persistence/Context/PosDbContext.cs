@@ -28,5 +28,7 @@ namespace Pos.Persistence.Context
         public DbSet<VoucherSerie> VoucherSeries { get; set; }
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<UnitOfMeasure> UnitOfMeasures { get; set; }
+        public DbSet<InventoryAdjustment> InventoryAdjustments { get; set; }
+        public DbSet<InventoryAdjustmentDetail> InventoryAdjustmentDetails { get; set; }
     }
 }
