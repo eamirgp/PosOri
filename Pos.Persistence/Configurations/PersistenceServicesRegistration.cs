@@ -30,11 +30,13 @@ namespace Pos.Persistence.Configurations
             services.AddScoped<IDocumentTypeRepository, DocumentTypeRepository>();
             services.AddScoped<IDocumentTypeQueryRepository, DocumentTypeQueryRepository>();
             services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+            services.AddScoped<IPurchaseQueryRepository, PurchaseQueryRepository>();
             services.AddScoped<ISaleRepository, SaleRepository>();
             services.AddScoped<IVoucherTypeRepository, VoucherTypeRepository>();
             services.AddScoped<IVoucherTypeQueryRepository, VoucherTypeQueryRepository>();
             services.AddScoped<IVoucherSerieRepository, VoucherSerieRepository>();
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
+            services.AddScoped<ICurrencyQueryRepository, CurrencyQueryRepository>();
             services.AddScoped<IUnitOfMeasureRepository, UnitOfMeasureRepository>();
             services.AddScoped<IUnitOfMeasureQueryRepository, UnitOfMeasureQueryRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
