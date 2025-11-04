@@ -8,6 +8,7 @@ namespace Pos.Application.Features.InventoryAdjustment.Commands.CreateInventoryA
     public class CreateInventoryAdjustmentRequestHandler : IRequestHandler<CreateInventoryAdjustmentRequest, Result<Guid>>
     {
         private readonly IInventoryAdjustmentRepository _inventoryAdjustmentRepository;
+        private readonly IAdjustmentTypeRepository _adjustmentTypeRepository;
         private readonly IWarehouseRepository _warehouseRepository;
         private readonly IProductRepository _productRepository;
         private readonly IInventoryRepository _inventoryRepository;
@@ -15,6 +16,7 @@ namespace Pos.Application.Features.InventoryAdjustment.Commands.CreateInventoryA
 
         public CreateInventoryAdjustmentRequestHandler(
             IInventoryAdjustmentRepository inventoryAdjustmentRepository,
+            IAdjustmentTypeRepository adjustmentTypeRepository,
             IWarehouseRepository warehouseRepository,
             IProductRepository productRepository,
             IInventoryRepository inventoryRepository,
@@ -22,6 +24,7 @@ namespace Pos.Application.Features.InventoryAdjustment.Commands.CreateInventoryA
             )
         {
             _inventoryAdjustmentRepository = inventoryAdjustmentRepository;
+            _adjustmentTypeRepository = adjustmentTypeRepository;
             _warehouseRepository = warehouseRepository;
             _productRepository = productRepository;
             _inventoryRepository = inventoryRepository;
@@ -34,6 +37,11 @@ namespace Pos.Application.Features.InventoryAdjustment.Commands.CreateInventoryA
             var warehouse = await _warehouseRepository.GetByIdAsync(request.WarehouseId);
             if (warehouse is null)
                 return Result<Guid>.Failure(new List<string> { $"El almacén con ID '{request.WarehouseId}' no existe." }, 404);
+
+            // Validate adjustment type exists
+            var adjustmentType = await _adjustmentTypeRepository.GetByIdAsync(request.AdjustmentTypeId);
+            if (adjustmentType is null)
+                return Result<Guid>.Failure(new List<string> { $"El tipo de ajuste con ID '{request.AdjustmentTypeId}' no existe." }, 404);
 
             // Validate products exist
             var productIds = request.Details.Select(d => d.ProductId).ToList();
@@ -65,7 +73,7 @@ namespace Pos.Application.Features.InventoryAdjustment.Commands.CreateInventoryA
             {
                 adjustment = Domain.Entities.InventoryAdjustment.Create(
                     request.WarehouseId,
-                    request.AdjustmentType,
+                    request.AdjustmentTypeId,
                     request.Date,
                     request.Reason,
                     detailsInput
@@ -85,12 +93,14 @@ namespace Pos.Application.Features.InventoryAdjustment.Commands.CreateInventoryA
             var newInventories = new List<Domain.Entities.Inventory>();
 
             // Apply stock adjustments based on adjustment type
+            bool isNegativeAdjustment = adjustmentType.Code == "NEGATIVE";
+
             foreach (var detail in request.Details)
             {
                 if (inventoriesDictionary.TryGetValue(detail.ProductId, out var inventory))
                 {
                     // Update existing inventory
-                    if (adjustment.AdjustmentType.IsNegative)
+                    if (isNegativeAdjustment)
                     {
                         try
                         {
@@ -113,7 +123,7 @@ namespace Pos.Application.Features.InventoryAdjustment.Commands.CreateInventoryA
                 else
                 {
                     // Create new inventory only for Initial or Positive adjustments
-                    if (adjustment.AdjustmentType.IsNegative)
+                    if (isNegativeAdjustment)
                     {
                         var product = productsDictionary[detail.ProductId];
                         return Result<Guid>.Failure(

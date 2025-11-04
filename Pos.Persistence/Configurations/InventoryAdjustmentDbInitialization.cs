@@ -16,13 +16,8 @@ namespace Pos.Persistence.Configurations
             builder.Property(ia => ia.WarehouseId)
                 .IsRequired();
 
-            builder.OwnsOne(ia => ia.AdjustmentType, adjustmentType =>
-            {
-                adjustmentType.Property(at => at.Value)
-                    .HasColumnName("AdjustmentType")
-                    .IsRequired()
-                    .HasMaxLength(20);
-            });
+            builder.Property(ia => ia.AdjustmentTypeId)
+                .IsRequired();
 
             builder.OwnsOne(ia => ia.Date, date =>
             {
@@ -45,6 +40,11 @@ namespace Pos.Persistence.Configurations
             builder.HasOne<Warehouse>()
                 .WithMany()
                 .HasForeignKey(ia => ia.WarehouseId);
+
+            builder.HasOne(ia => ia.AdjustmentType)
+                .WithMany()
+                .HasForeignKey(ia => ia.AdjustmentTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

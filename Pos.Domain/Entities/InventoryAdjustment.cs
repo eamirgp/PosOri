@@ -8,32 +8,32 @@ namespace Pos.Domain.Entities
     public class InventoryAdjustment : BaseEntity
     {
         public Guid WarehouseId { get; private set; }
-        public AdjustmentType AdjustmentType { get; private set; } = default!;
+        public Guid AdjustmentTypeId { get; private set; }
         public IssueDate Date { get; private set; } = default!;
         public Reason Reason { get; private set; } = default!;
 
+        public AdjustmentType AdjustmentType { get; private set; } = default!;
         public List<InventoryAdjustmentDetail> Details { get; private set; } = new();
 
         protected InventoryAdjustment() { }
 
-        private InventoryAdjustment(Guid warehouseId, AdjustmentType adjustmentType, IssueDate date, Reason reason)
+        private InventoryAdjustment(Guid warehouseId, Guid adjustmentTypeId, IssueDate date, Reason reason)
         {
             WarehouseId = warehouseId;
-            AdjustmentType = adjustmentType;
+            AdjustmentTypeId = adjustmentTypeId;
             Date = date;
             Reason = reason;
         }
 
-        public static InventoryAdjustment Create(Guid warehouseId, string adjustmentType, DateTime date, string reason, List<InventoryAdjustmentDetailInput> details)
+        public static InventoryAdjustment Create(Guid warehouseId, Guid adjustmentTypeId, DateTime date, string reason, List<InventoryAdjustmentDetailInput> details)
         {
-            var adjustmentTypeVO = AdjustmentType.Create(adjustmentType);
             var dateVO = IssueDate.Create(date);
             var reasonVO = Reason.Create(reason);
 
             ValidateHasDetails(details);
             ValidateNoDuplicateProducts(details);
 
-            var adjustment = new InventoryAdjustment(warehouseId, adjustmentTypeVO, dateVO, reasonVO);
+            var adjustment = new InventoryAdjustment(warehouseId, adjustmentTypeId, dateVO, reasonVO);
 
             foreach (var detail in details)
             {

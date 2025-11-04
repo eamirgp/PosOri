@@ -5,7 +5,7 @@ namespace Pos.Application.Features.InventoryAdjustment.Commands.CreateInventoryA
 {
     public record CreateInventoryAdjustmentRequest(
         Guid WarehouseId,
-        string AdjustmentType,
+        Guid AdjustmentTypeId,
         DateTime Date,
         string Reason,
         List<CreateInventoryAdjustmentDetailDto> Details

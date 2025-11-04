@@ -31,7 +31,7 @@ namespace Pos.Persistence.Repository.Queries
                 whereConditions.Add("ia.WarehouseId = @WarehouseId");
 
             if (!string.IsNullOrWhiteSpace(param.SearchTerm))
-                whereConditions.Add("(ia.Reason LIKE @SearchPattern OR ia.AdjustmentType LIKE @SearchPattern)");
+                whereConditions.Add("(ia.Reason LIKE @SearchPattern OR at.Description LIKE @SearchPattern)");
 
             var whereClause = whereConditions.Any() ? "WHERE " + string.Join(" AND ", whereConditions) : "";
 
@@ -41,6 +41,7 @@ namespace Pos.Persistence.Repository.Queries
                              SELECT
                              COUNT(*)
                              FROM InventoryAdjustments ia
+                             INNER JOIN AdjustmentTypes at ON ia.AdjustmentTypeId = at.Id
                              {whereClause}";
 
             var totalCount = await connection.ExecuteScalarAsync<int>(countQuery, new { WarehouseId = warehouseId, SearchPattern = searchPattern });
@@ -51,10 +52,11 @@ namespace Pos.Persistence.Repository.Queries
                             ia.Date,
                             ia.WarehouseId,
                             w.Name AS Warehouse,
-                            ia.AdjustmentType,
+                            at.Description AS AdjustmentType,
                             ia.Reason
                         FROM InventoryAdjustments ia
                         INNER JOIN Warehouses w ON ia.WarehouseId = w.Id
+                        INNER JOIN AdjustmentTypes at ON ia.AdjustmentTypeId = at.Id
                         {whereClause}
                         {orderByClause}
                         OFFSET @Offset ROWS
