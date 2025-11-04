@@ -32,6 +32,7 @@ namespace Pos.Persistence.Configurations
             services.AddScoped<IPurchaseRepository, PurchaseRepository>();
             services.AddScoped<IPurchaseQueryRepository, PurchaseQueryRepository>();
             services.AddScoped<ISaleRepository, SaleRepository>();
+            services.AddScoped<ISaleQueryRepository, SaleQueryRepository>();
             services.AddScoped<IVoucherTypeRepository, VoucherTypeRepository>();
             services.AddScoped<IVoucherTypeQueryRepository, VoucherTypeQueryRepository>();
             services.AddScoped<IVoucherSerieRepository, VoucherSerieRepository>();

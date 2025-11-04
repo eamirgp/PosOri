@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Pos.Application.Features.Sale.Commands.CreateSale;
+using Pos.Application.Features.Sale.Queries.GetAllSales;
+using Pos.Application.Shared.Pagination;
 
 namespace Pos.Api.Controllers
 {
@@ -22,6 +24,13 @@ namespace Pos.Api.Controllers
             return response.IsSuccess
                 ? Created(string.Empty, new { saleId = response.Value })
                 : StatusCode(response.StatusCode, new { errors = response.Errors });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync([FromQuery]PaginationParams param, [FromQuery]Guid? warehouseId)
+        {
+            var response = await _sender.Send(new GetAllSalesRequest(param, warehouseId));
+            return Ok(response);
         }
     }
 }

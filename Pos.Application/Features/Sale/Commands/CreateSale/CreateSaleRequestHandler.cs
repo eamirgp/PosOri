@@ -127,7 +127,7 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
                 person.Id,
                 serie,
                 number,
-                request.IssueDate,
+                DateTime.Now,
                 detailsInput
                 );
 

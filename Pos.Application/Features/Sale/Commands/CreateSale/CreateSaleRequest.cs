@@ -8,7 +8,6 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
         Guid VoucherTypeId,
         Guid CurrencyId,
         Guid PersonId,
-        DateTime IssueDate,
         List<CreateSaleDetailDto> Details
         ) : IRequest<Result<Guid>>;
 }

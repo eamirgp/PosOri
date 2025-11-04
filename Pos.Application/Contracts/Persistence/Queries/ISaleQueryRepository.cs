@@ -1,6 +1,10 @@
-﻿namespace Pos.Application.Contracts.Persistence.Queries
+﻿using Pos.Application.Features.Sale.Queries.GetAllSales;
+using Pos.Application.Shared.Pagination;
+
+namespace Pos.Application.Contracts.Persistence.Queries
 {
     public interface ISaleQueryRepository
     {
+        Task<PaginatedResult<SaleDto>> GetAllSalesAsync(PaginationParams param, Guid? warehouseId);
     }
 }
