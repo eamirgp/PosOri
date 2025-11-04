@@ -2,6 +2,7 @@
 {
     public record SaleDto(
         Guid Id,
+        DateTime IssueDate,
         Guid WarehouseId,
         string Warehouse,
         Guid VoucherTypeId,

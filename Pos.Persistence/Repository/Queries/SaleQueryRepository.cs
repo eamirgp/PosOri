@@ -37,7 +37,7 @@ namespace Pos.Persistence.Repository.Queries
             var whereClause = whereConditions.Any() ? "WHERE " + string.Join(" AND ", whereConditions) : "";
 
             var orderByClause = string.IsNullOrEmpty(param.SearchTerm)
-                ? "ORDER BY s.CreatedDate DESC"
+                ? "ORDER BY s.IssueDate DESC"
                 : @"ORDER BY
                             CASE
                                 WHEN s.Number LIKE @StartsWithPattern THEN 0
@@ -45,7 +45,7 @@ namespace Pos.Persistence.Repository.Queries
                                 WHEN p.Name LIKE @StartsWithPattern THEN 2
                                 ELSE 3
                             END,
-                            s.CreatedDate DESC";
+                            s.IssueDate DESC";
 
             var countQuery = $@"
                              SELECT
@@ -59,6 +59,7 @@ namespace Pos.Persistence.Repository.Queries
             var query = $@"
                         SELECT
                             s.Id,
+                            s.IssueDate,
                             s.WarehouseId,
                             w.Name AS Warehouse,
                             s.VoucherTypeId,
