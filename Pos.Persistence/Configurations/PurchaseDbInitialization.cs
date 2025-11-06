@@ -64,6 +64,10 @@ namespace Pos.Persistence.Configurations
             builder.Property(p => p.CreatedDate)
                 .IsRequired();
 
+            builder.HasMany(p => p.PurchaseDetails)
+                .WithOne()
+                .HasForeignKey(pd => pd.PurchaseId);
+
             builder.HasOne<Warehouse>()
                 .WithMany()
                 .HasForeignKey(p => p.WarehouseId);

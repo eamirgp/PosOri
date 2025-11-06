@@ -16,17 +16,13 @@ namespace Pos.Domain.Entities
         public decimal TaxAmount { get; private set; }
         public decimal LineTotal { get; private set; }
 
-        public Sale Sale { get; private set; } = default!;
-        public Product Product { get; private set; } = default!;
         public IGVType IGVType { get; private set; } = default!;
 
         protected SaleDetail() { }
 
         private SaleDetail(Sale sale, Product product, IGVType igvType, Quantity quantity, UnitPrice unitPrice)
         {
-            Sale = sale;
             SaleId = sale.Id;
-            Product = product;
             ProductId = product.Id;
             UnitOfMeasureId = product.UnitOfMeasureId;
             IGVType = igvType;

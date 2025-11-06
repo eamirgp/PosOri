@@ -15,7 +15,7 @@ namespace Pos.Application.Features.Sale.Queries.GetAllSales
 
         public async Task<PaginatedResult<SaleDto>> Handle(GetAllSalesRequest request, CancellationToken cancellationToken)
         {
-            return await _saleQueryRepository.GetAllSalesAsync(request.param, request.warehouseId);
+            return await _saleQueryRepository.GetAllSalesAsync(request.Param, request.WarehouseId);
         }
     }
 }

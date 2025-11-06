@@ -56,11 +56,7 @@ namespace Pos.Persistence.Configurations
             builder.Property(sd => sd.CreatedDate)
                 .IsRequired();
 
-            builder.HasOne(sd => sd.Sale)
-                .WithMany(s => s.SaleDetails)
-                .HasForeignKey(sd => sd.SaleId);
-
-            builder.HasOne(sd => sd.Product)
+            builder.HasOne<Product>()
                 .WithMany()
                 .HasForeignKey(sd => sd.ProductId);
 

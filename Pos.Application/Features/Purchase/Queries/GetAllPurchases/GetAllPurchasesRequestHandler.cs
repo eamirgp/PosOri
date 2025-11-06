@@ -15,7 +15,7 @@ namespace Pos.Application.Features.Purchase.Queries.GetAllPurchases
 
         public async Task<PaginatedResult<PurchaseDto>> Handle(GetAllPurchasesRequest request, CancellationToken cancellationToken)
         {
-            return await _purchaseQueryRepository.GetAllPurchasesAsync(request.param, request.warehouseId);
+            return await _purchaseQueryRepository.GetAllPurchasesAsync(request.Param, request.WarehouseId);
         }
     }
 }
