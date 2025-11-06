@@ -29,15 +29,15 @@ namespace Pos.Domain.Entities
 
             foreach(var detail in details)
             {
-                inventoryAdjustment.AddAdjustmentDetail(detail.ProductId, detail.UnitOfMeasureId, detail.Quantity);
+                inventoryAdjustment.AddAdjustmentDetail(detail.Product, detail.Quantity);
             }
 
             return inventoryAdjustment;
         }
 
-        private void AddAdjustmentDetail(Guid productId, Guid unitOfMeasureId, decimal quantity)
+        private void AddAdjustmentDetail(Product product, decimal quantity)
         {
-            var detail = InventoryAdjustmentDetail.Create(this.Id, productId, unitOfMeasureId, quantity);
+            var detail = InventoryAdjustmentDetail.Create(this, product, quantity);
             InventoryAdjustmentDetails.Add(detail);
         }
     }

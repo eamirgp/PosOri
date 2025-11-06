@@ -2,7 +2,6 @@
 {
     public record CreateInventoryAdjustmentDetailDto(
         Guid ProductId,
-        Guid UnitOfMeasureId,
         decimal Quantity
         );
 }

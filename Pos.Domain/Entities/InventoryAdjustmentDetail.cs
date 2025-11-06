@@ -12,19 +12,19 @@ namespace Pos.Domain.Entities
 
         protected InventoryAdjustmentDetail() { }
 
-        private InventoryAdjustmentDetail(Guid inventoryAdjustmentId, Guid productId, Guid unitOfMeasureId, Quantity quantity)
+        private InventoryAdjustmentDetail(InventoryAdjustment inventoryAdjustment, Product product, Quantity quantity)
         {
-            InventoryAdjustmentId = inventoryAdjustmentId;
-            ProductId = productId;
-            UnitOfMeasureId = unitOfMeasureId;
+            InventoryAdjustmentId = inventoryAdjustment.Id;
+            ProductId = product.Id;
+            UnitOfMeasureId = product.UnitOfMeasureId;
             Quantity = quantity;
         }
 
-        public static InventoryAdjustmentDetail Create(Guid inventoryAdjustmentId, Guid productId, Guid unitOfMeasureId, decimal quantity)
+        public static InventoryAdjustmentDetail Create(InventoryAdjustment inventoryAdjustment, Product product, decimal quantity)
         {
             var quantityVO = Quantity.Create(quantity);
 
-            return new(inventoryAdjustmentId, productId, unitOfMeasureId, quantityVO);
+            return new(inventoryAdjustment, product, quantityVO);
         }
     }
 }

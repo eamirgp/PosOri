@@ -30,10 +30,6 @@ namespace Pos.Persistence.Configurations
             builder.Property(iad => iad.CreatedDate)
                 .IsRequired();
 
-            builder.HasOne<InventoryAdjustment>()
-                .WithMany()
-                .HasForeignKey(iad => iad.InventoryAdjustmentId);
-
             builder.HasOne<Product>()
                 .WithMany()
                 .HasForeignKey(iad => iad.ProductId);

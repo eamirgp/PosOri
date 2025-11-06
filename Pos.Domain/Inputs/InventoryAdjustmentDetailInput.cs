@@ -1,8 +1,9 @@
-﻿namespace Pos.Domain.Inputs
+﻿using Pos.Domain.Entities;
+
+namespace Pos.Domain.Inputs
 {
     public record InventoryAdjustmentDetailInput(
-        Guid ProductId,
-        Guid UnitOfMeasureId,
+        Product Product,
         decimal Quantity
         );
 }
