@@ -15,7 +15,7 @@
                 throw new ArgumentException("El motivo de ajuste es requerido.");
 
             if (reason.Length > 200)
-                throw new ArgumentException("El motivo no puede exceder los 500 caracteres.");
+                throw new ArgumentException("El motivo no puede exceder los 200 caracteres.");
 
             return new(reason);
         }

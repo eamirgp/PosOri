@@ -25,6 +25,9 @@ namespace Pos.Domain.Entities
         {
             var reasonVO = Reason.Create(reason);
 
+            ValidateHasPurchaseDetail(details);
+            ValidateNoDuplicateProducts(details);
+
             var inventoryAdjustment = new InventoryAdjustment(warehouseId, inventoryAdjustmentTypeId, reasonVO);
 
             foreach(var detail in details)
@@ -39,6 +42,18 @@ namespace Pos.Domain.Entities
         {
             var detail = InventoryAdjustmentDetail.Create(this, product, quantity);
             InventoryAdjustmentDetails.Add(detail);
+        }
+
+        private static void ValidateHasPurchaseDetail(List<InventoryAdjustmentDetailInput> details)
+        {
+            if (details is null || !details.Any())
+                throw new ArgumentException("El ajuste de inventario debe tener al menos un detalle.");
+        }
+
+        private static void ValidateNoDuplicateProducts(List<InventoryAdjustmentDetailInput> details)
+        {
+            if (details.Select(d => d.Product.Id).Distinct().Count() != details.Count)
+                throw new ArgumentException("No puede haber productos duplicados.");
         }
     }
 }
