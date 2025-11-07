@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Pos.Application.Features.Purchase.Commands.CreatePurchase;
 using Pos.Application.Features.Purchase.Queries.GetAllPurchases;
+using Pos.Application.Features.Purchase.Queries.GetPurchaseById;
 using Pos.Application.Shared.Pagination;
 
 namespace Pos.Api.Controllers
@@ -31,6 +32,15 @@ namespace Pos.Api.Controllers
         {
             var response = await _sender.Send(new GetAllPurchasesRequest(param, warehouseId));
             return Ok(response);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetByIdAsync(Guid id)
+        {
+            var response = await _sender.Send(new GetPurchaseByIdRequest(id));
+            return response.IsSuccess
+                ? Ok(response.Value)
+                : StatusCode(response.StatusCode, new { errors = response.Errors });
         }
     }
 }
