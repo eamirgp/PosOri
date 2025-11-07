@@ -98,7 +98,7 @@ namespace Pos.Persistence.Repository.Queries
         {
             using var connection = new SqlConnection(_connectionString);
 
-            var headerQuery = @"
+            var sql = @"
                         SELECT
                             p.Id,
                             p.IssueDate,
@@ -125,14 +125,13 @@ namespace Pos.Persistence.Repository.Queries
                         INNER JOIN Persons pe ON p.PersonId = pe.Id
                         INNER JOIN DocumentTypes dt ON pe.DocumentTypeId = dt.Id
                         INNER JOIN Currencies c ON p.CurrencyId = c.Id
-                        WHERE p.Id = @PurchaseId";
+                        WHERE p.Id = @PurchaseId;
 
-            var detailsQuery = @"
                         SELECT
                             pd.Id,
                             pd.ProductId,
-                            p.Code AS ProductCode,
-                            p.Name AS ProductName,
+                            pr.Code AS ProductCode,
+                            pr.Name AS ProductName,
                             pd.UnitOfMeasureId,
                             um.Description AS UnitOfMeasure,
                             pd.IGVTypeId,
@@ -143,18 +142,19 @@ namespace Pos.Persistence.Repository.Queries
                             pd.TaxAmount,
                             pd.LineTotal
                         FROM PurchaseDetails pd
-                        INNER JOIN Products p ON pd.ProductId = p.Id
+                        INNER JOIN Products pr ON pd.ProductId = pr.Id
                         INNER JOIN UnitOfMeasures um ON pd.UnitOfMeasureId = um.Id
                         INNER JOIN IGVTypes it ON pd.IGVTypeId = it.Id
                         WHERE pd.PurchaseId = @PurchaseId
-                        ORDER BY pd.CreatedDate ASC";
+                        ORDER BY pd.CreatedDate ASC;";
 
-            var header = await connection.QueryFirstOrDefaultAsync<PurchaseHeaderTemp>(headerQuery, new { PurchaseId = purchaseId });
+            using var multi = await connection.QueryMultipleAsync(sql, new { PurchaseId = purchaseId });
 
+            var header = await multi.ReadFirstOrDefaultAsync<PurchaseHeaderTemp>();
             if (header is null)
                 return null;
 
-            var details = await connection.QueryAsync<PurchaseDetailItemDto>(detailsQuery, new { PurchaseId = purchaseId });
+            var details = (await multi.ReadAsync<PurchaseDetailItemDto>()).ToList();
 
             return new PurchaseCompleteDto(
                 header.Id,

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Pos.Application.Features.Sale.Commands.CreateSale;
 using Pos.Application.Features.Sale.Queries.GetAllSales;
+using Pos.Application.Features.Sale.Queries.GetSaleById;
 using Pos.Application.Shared.Pagination;
 
 namespace Pos.Api.Controllers
@@ -31,6 +32,15 @@ namespace Pos.Api.Controllers
         {
             var response = await _sender.Send(new GetAllSalesRequest(param, warehouseId));
             return Ok(response);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetByIdAsync(Guid id)
+        {
+            var response = await _sender.Send(new GetSaleByIdRequest(id));
+            return response.IsSuccess
+                ? Ok(response.Value)
+                : StatusCode(response.StatusCode, new { errors = response.Errors });
         }
     }
 }
