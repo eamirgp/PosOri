@@ -96,7 +96,7 @@ namespace Pos.Persistence.Repository.Queries
 
         public async Task<SaleCompleteDto?> GetSaleByIdAsync(Guid saleId)
         {
-            var connection = new SqlConnection(_connectionString);
+            using var connection = new SqlConnection(_connectionString);
 
             var sql = @"
                         SELECT

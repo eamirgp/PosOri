@@ -41,6 +41,7 @@ namespace Pos.Persistence.Configurations
             services.AddScoped<IUnitOfMeasureRepository, UnitOfMeasureRepository>();
             services.AddScoped<IUnitOfMeasureQueryRepository, UnitOfMeasureQueryRepository>();
             services.AddScoped<IInventoryAdjustmentRepository, InventoryAdjustmentRepository>();
+            services.AddScoped<IInventoryAdjustmentQueryRepository, InventoryAdjustmentQueryRepository>();
             services.AddScoped<IInventoryAdjustmentTypeRepository, InventoryAdjustmentTypeRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

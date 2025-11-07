@@ -18,7 +18,7 @@ namespace Pos.Application.Features.Sale.Queries.GetSaleById
             var sale = await _saleQueryRepository.GetSaleByIdAsync(request.Id);
 
             if (sale is null)
-                return Result<SaleCompleteDto>.Failure(new List<string> { "" });
+                return Result<SaleCompleteDto>.Failure(new List<string> { $"La venta con ID '{request.Id}' no existe." }, 404);
 
             return Result<SaleCompleteDto>.Success(sale);
         }
