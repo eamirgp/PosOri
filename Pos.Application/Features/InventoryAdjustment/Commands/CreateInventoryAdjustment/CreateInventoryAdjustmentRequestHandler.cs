@@ -103,7 +103,7 @@ namespace Pos.Application.Features.InventoryAdjustment.Commands.CreateInventoryA
             var newInventories = new List<Domain.Entities.Inventory>();
             bool isIncrease = inventoryAdjustmentType.Code == "INC";
 
-            var movements = new List<InventoryMovement>();
+            var movements = new List<Domain.Entities.InventoryMovement>();
 
             foreach (var detail in request.Details)
             {
@@ -132,7 +132,7 @@ namespace Pos.Application.Features.InventoryAdjustment.Commands.CreateInventoryA
                     }
                 }
 
-                var movement = InventoryMovement.CreateAdjustmentMovement(
+                var movement = Domain.Entities.InventoryMovement.CreateAdjustmentMovement(
                     detail.ProductId,
                     warehouse.Id,
                     detail.Quantity,
