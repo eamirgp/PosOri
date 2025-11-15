@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Pos.Application.Contracts.Persistence;
 using Pos.Application.Shared.Result;
+using Pos.Domain.Entities;
 using Pos.Domain.Inputs;
 
 namespace Pos.Application.Features.InventoryAdjustment.Commands.CreateInventoryAdjustment
@@ -12,6 +13,7 @@ namespace Pos.Application.Features.InventoryAdjustment.Commands.CreateInventoryA
         private readonly IInventoryAdjustmentTypeRepository _inventoryAdjustmentTypeRepository;
         private readonly IProductRepository _productRepository;
         private readonly IInventoryRepository _inventoryRepository;
+        private readonly IInventoryMovementRepository _inventoryMovementRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public CreateInventoryAdjustmentRequestHandler(
@@ -20,6 +22,7 @@ namespace Pos.Application.Features.InventoryAdjustment.Commands.CreateInventoryA
             IInventoryAdjustmentTypeRepository inventoryAdjustmentTypeRepository,
             IProductRepository productRepository,
             IInventoryRepository inventoryRepository,
+            IInventoryMovementRepository inventoryMovementRepository,
             IUnitOfWork unitOfWork
             )
         {
@@ -28,6 +31,7 @@ namespace Pos.Application.Features.InventoryAdjustment.Commands.CreateInventoryA
             _inventoryAdjustmentTypeRepository = inventoryAdjustmentTypeRepository;
             _productRepository = productRepository;
             _inventoryRepository = inventoryRepository;
+            _inventoryMovementRepository = inventoryMovementRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -97,23 +101,26 @@ namespace Pos.Application.Features.InventoryAdjustment.Commands.CreateInventoryA
             await _inventoryAdjustmentRepository.CreateAsync(inventoryAdjustment);
 
             var newInventories = new List<Domain.Entities.Inventory>();
+            bool isIncrease = inventoryAdjustmentType.Code == "INC";
+
+            var movements = new List<InventoryMovement>();
 
             foreach (var detail in request.Details)
             {
+                var previousStock = inventoriesDictionary.ContainsKey(detail.ProductId)
+                    ? inventoriesDictionary[detail.ProductId].Stock.Value
+                    : 0;
+
                 if (inventoriesDictionary.TryGetValue(detail.ProductId, out var inventory))
                 {
-                    if (inventoryAdjustmentType.Code == "INC")
-                    {
+                    if (isIncrease)
                         inventory.IncreaseStock(detail.Quantity);
-                    }
-                    else if (inventoryAdjustmentType.Code == "DEC")
-                    {
+                    else
                         inventory.DecreaseStock(detail.Quantity);
-                    }
                 }
                 else
                 {
-                    if (inventoryAdjustmentType.Code == "INC")
+                    if (isIncrease)
                     {
                         var newInventory = Domain.Entities.Inventory.Create(
                             detail.ProductId,
@@ -124,10 +131,23 @@ namespace Pos.Application.Features.InventoryAdjustment.Commands.CreateInventoryA
                         newInventories.Add(newInventory);
                     }
                 }
+
+                var movement = InventoryMovement.CreateAdjustmentMovement(
+                    detail.ProductId,
+                    warehouse.Id,
+                    detail.Quantity,
+                    inventoryAdjustment.Id,
+                    previousStock,
+                    isIncrease
+                    );
+
+                movements.Add(movement);
             }
 
             if (newInventories.Any())
                 await _inventoryRepository.CreateRangeAsync(newInventories);
+
+            await _inventoryMovementRepository.CreateRangeAsync(movements);
 
             await _unitOfWork.SaveChangesAsync();
 

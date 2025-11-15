@@ -16,6 +16,7 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
         private readonly IProductRepository _productRepository;
         private readonly IIGVTypeRepository _igvTypeRepository;
         private readonly IInventoryRepository _inventoryRepository;
+        private readonly IInventoryMovementRepository _inventoryMovementRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public CreateSaleRequestHandler(
@@ -28,6 +29,7 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
             IProductRepository productRepository,
             IIGVTypeRepository igvTypeRepository,
             IInventoryRepository inventoryRepository,
+            IInventoryMovementRepository inventoryMovementRepository,
             IUnitOfWork unitOfWork
             )
         {
@@ -40,6 +42,7 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
             _productRepository = productRepository;
             _igvTypeRepository = igvTypeRepository;
             _inventoryRepository = inventoryRepository;
+            _inventoryMovementRepository = inventoryMovementRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -133,10 +136,26 @@ namespace Pos.Application.Features.Sale.Commands.CreateSale
 
             await _saleRepository.CreateAsync(sale);
 
+            var movements = new List<Domain.Entities.InventoryMovement>();
+
             foreach (var detail in request.Details)
             {
+                var previousStock = inventoriesDictionary[detail.ProductId].Stock.Value;
+
                 inventoriesDictionary[detail.ProductId].DecreaseStock(detail.Quantity);
+
+                var movement = Domain.Entities.InventoryMovement.CreateSaleMovement(
+                    detail.ProductId,
+                    warehouse.Id,
+                    detail.Quantity,
+                    sale.Id,
+                    previousStock
+                    );
+
+                movements.Add(movement);
             }
+
+            await _inventoryMovementRepository.CreateRangeAsync(movements);
 
             await _unitOfWork.SaveChangesAsync();
 

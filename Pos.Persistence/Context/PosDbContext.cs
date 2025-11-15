@@ -31,5 +31,6 @@ namespace Pos.Persistence.Context
         public DbSet<InventoryAdjustment> InventoryAdjustments { get; set; }
         public DbSet<InventoryAdjustmentDetail> InventoryAdjustmentDetails { get; set; }
         public DbSet<InventoryAdjustmentType> InventoryAdjustmentTypes { get; set; }
+        public DbSet<InventoryMovement> InventoryMovements { get; set; }
     }
 }

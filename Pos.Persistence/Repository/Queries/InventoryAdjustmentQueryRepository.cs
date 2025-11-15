@@ -54,7 +54,7 @@ namespace Pos.Persistence.Repository.Queries
             if (header is null)
                 return null;
 
-            var details = (await multi.ReadAsync<InventoryAdjusmentDetailItemDto>()).ToList();
+            var details = (await multi.ReadAsync<InventoryAdjustmentDetailItemDto>()).ToList();
 
             return new InventoryAdjustmentCompleteDto(
                 header.Id,

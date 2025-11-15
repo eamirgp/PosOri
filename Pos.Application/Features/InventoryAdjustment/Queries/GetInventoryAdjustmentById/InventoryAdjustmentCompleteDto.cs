@@ -8,11 +8,11 @@
         string InventoryAdjustmentType,
         string Reason,
         DateTime CreatedDate,
-        List<InventoryAdjusmentDetailItemDto> Details
+        List<InventoryAdjustmentDetailItemDto> Details
         );
 
-    public record InventoryAdjusmentDetailItemDto(
-        Guid id,
+    public record InventoryAdjustmentDetailItemDto(
+        Guid Id,
         Guid ProductId,
         string ProductCode,
         string ProductName,

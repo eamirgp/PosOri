@@ -15,6 +15,7 @@ namespace Pos.Application.Features.Purchase.Commands.CreatePurchase
         private readonly IProductRepository _productRepository;
         private readonly IIGVTypeRepository _igvTypeRepository;
         private readonly IInventoryRepository _inventoryRepository;
+        private readonly IInventoryMovementRepository _inventoryMovementRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public CreatePurchaseRequestHandler(
@@ -26,6 +27,7 @@ namespace Pos.Application.Features.Purchase.Commands.CreatePurchase
             IProductRepository productRepository,
             IIGVTypeRepository iGVTypeRepository,
             IInventoryRepository inventoryRepository,
+            IInventoryMovementRepository inventoryMovementRepository,
             IUnitOfWork unitOfWork
             )
         {
@@ -37,6 +39,7 @@ namespace Pos.Application.Features.Purchase.Commands.CreatePurchase
             _productRepository = productRepository;
             _igvTypeRepository = iGVTypeRepository;
             _inventoryRepository = inventoryRepository;
+            _inventoryMovementRepository = inventoryMovementRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -108,8 +111,14 @@ namespace Pos.Application.Features.Purchase.Commands.CreatePurchase
 
             var newInventories = new List<Domain.Entities.Inventory>();
 
+            var movements = new List<Domain.Entities.InventoryMovement>();
+
             foreach (var detail in request.Details)
             {
+                var previousStock = inventoriesDictionary.ContainsKey(detail.ProductId)
+                    ? inventoriesDictionary[detail.ProductId].Stock.Value
+                    : 0;
+
                 if (inventoriesDictionary.TryGetValue(detail.ProductId, out var inventory))
                 {
                     inventory.IncreaseStock(detail.Quantity);
@@ -124,10 +133,22 @@ namespace Pos.Application.Features.Purchase.Commands.CreatePurchase
 
                     newInventories.Add(newInventory);
                 }
+
+                var movement = Domain.Entities.InventoryMovement.CreatePurchaseMovement(
+                    detail.ProductId,
+                    warehouse.Id,
+                    detail.Quantity,
+                    purchase.Id,
+                    previousStock
+                    );
+
+                movements.Add(movement);
             }
 
             if (newInventories.Any())
                 await _inventoryRepository.CreateRangeAsync(newInventories);
+
+            await _inventoryMovementRepository.CreateRangeAsync(movements);
 
             await _unitOfWork.SaveChangesAsync();
 
