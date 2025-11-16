@@ -8,7 +8,7 @@
             {
                 options.AddPolicy(name: "CorsPolicy", builder =>
                 {
-                    builder.WithOrigins("https://localhost:7190")
+                    builder.WithOrigins("https://localhost:7190", "http://localhost:3000")
                     .AllowAnyMethod()
                     .AllowAnyHeader();
                 });
